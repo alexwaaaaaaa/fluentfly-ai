@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "92913866663",
+    "project_id": "fluentfly-d442d",
+    "storage_bucket": "fluentfly-d442d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92913866663:android:6ea31f55bef8fa19bac882",
+        "android_client_info": {
+          "package_name": "com.fluentfly.fluentfly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "92913866663-s110b6udcthdimh4d36bfnmrh63gn1bb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fluentfly.fluentfly",
+            "certificate_hash": "5947fac461a481dab8d679fdbd39ce87af046ac0"
+          }
+        },
+        {
+          "client_id": "92913866663-kaortvbir5g0ee630m2qe6m26fg4i85e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzawILIsi2lxKOkSnR5ucFeAjYpKPfHGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "92913866663-kaortvbir5g0ee630m2qe6m26fg4i85e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "92913866663-4mij0f5eck7fbbqkbvelf1e7eb1cm50o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.fluentfly.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
