@@ -8,6 +8,7 @@ node_modules/
 .env.local
 .env.*.local
 *.env
+backend/.env
 
 # Logs
 logs
@@ -32,11 +33,13 @@ dist/
 build/
 *.tsbuildinfo
 
-# Firebase
+# Firebase & Google Services
 firebase-service-account.json
 *-service-account.json
+google-services.json
+mobile/android/app/google-services.json
 
-# Keys
+# Keys & Certificates
 *.pem
 *.key
 *.p12
@@ -46,5 +49,99 @@ firebase-service-account.json
 *.temp
 .cache/
 
-# Documentation (optional - remove if you want to push)
-*.md.backup
+# Documentation & Summary files (keep only README.md in root)
+*_COMPLETE.md
+*_SUMMARY.md
+*_GUIDE.md
+*_SETUP.md
+*_FIX*.md
+*_CHECKLIST.md
+*_QUICK_START.md
+*_REPORT.md
+*_STATUS.md
+*_PLAN.md
+TASK_*.md
+BUILD_SUCCESS.txt
+READY_TO_TEST.txt
+SCALABILITY_SUMMARY.txt
+HOSTING_COMPARISON*.md
+TROUBLESHOOTING.md
+ENVIRONMENT_VARIABLES.md
+.project-structure.md
+QUICK_FIX_*.md
+NAVBAR_*.md
+RIVE_*.md
+LIVEKIT_*.md
+VIDEO_CALL_*.md
+PHONE_*.md
+APP_*.md
+CONTENT_*.md
+COMPLETE_*.md
+START_HERE_*.md
+HOW_TO_*.md
+FULL_*.md
+ONBOARDING_*.md
+VOCABULARY_*.md
+PHYSICAL_*.md
+SECURITY_*.md
+PERFORMANCE_*.md
+DEPLOYMENT*.md
+!DEPLOYMENT.md
+
+# Backend documentation
+backend/*_COMPLETE.md
+backend/*_SUMMARY.md
+backend/*_GUIDE.md
+backend/*_SETUP.md
+backend/*_REPORT.md
+backend/*_STATUS.md
+backend/TASK_*.md
+backend/README_AUTH.md
+backend/README_TESTS.md
+backend/LOGGING.md
+backend/ERROR_HANDLING.md
+backend/API_DOCUMENTATION.md
+
+# Mobile documentation
+mobile/*_SUMMARY.md
+mobile/*_QUICK_START.md
+mobile/ERROR_HANDLING.md
+mobile/USER_GUIDE.md
+mobile/lib/utils/README*.md
+mobile/lib/services/README*.md
+mobile/lib/config/README.md
+
+# Module-specific docs
+backend/src/modules/rtc/ANALYTICS_MONITORING.md
+
+# Helper scripts
+backend/setup-tests.sh
+backend/clear-rate-limit.sh
+backend/fix-video-call-*.sh
+
+# Database helper files
+backend/database/create_video_tables.sql
+backend/database/migrations/fix-video-call-fk.sql
+
+# Deployment scripts (keep in private repo only)
+deploy-*.sh
+ec2-setup.sh
+setup.sh
+setup.bat
+cleanup-git.sh
+*.yaml
+!docker-compose.yml
+!docker-compose.prod.yml
+!.github/**/*.yml
+!mobile/pubspec.yaml
+!mobile/analysis_options.yaml
+!k8s/*.yaml
+
+# Load test files
+load-tests/
+
+# Lesson generator helper
+lesson-generator-helper.js
+
+# Kiro specs (internal development docs)
+.kiro/specs/
