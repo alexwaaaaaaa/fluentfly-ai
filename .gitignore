@@ -1,37 +1,18 @@
-# Dependencies
+# ============================================
+# DEPENDENCIES
+# ============================================
 node_modules/
 .pnp
 .pnp.js
 
-# Environment variables
+# ============================================
+# ENVIRONMENT VARIABLES & SECRETS
+# ============================================
 .env
 .env.local
 .env.*.local
 *.env
 backend/.env
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Build outputs
-dist/
-build/
-*.tsbuildinfo
 
 # Firebase & Google Services
 firebase-service-account.json
@@ -44,12 +25,49 @@ mobile/android/app/google-services.json
 *.key
 *.p12
 
-# Temporary files
+# ============================================
+# LOGS
+# ============================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================
+# OS FILES
+# ============================================
+.DS_Store
+Thumbs.db
+
+# ============================================
+# IDE
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================
+# BUILD OUTPUTS
+# ============================================
+dist/
+build/
+*.tsbuildinfo
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
 *.tmp
 *.temp
 .cache/
 
-# Documentation & Summary files (keep only README.md in root)
+# ============================================
+# DOCUMENTATION FILES (Keep only essential READMEs)
+# ============================================
+
+# Root documentation (keep only README.md)
 *_COMPLETE.md
 *_SUMMARY.md
 *_GUIDE.md
@@ -87,26 +105,38 @@ SECURITY_*.md
 PERFORMANCE_*.md
 DEPLOYMENT*.md
 !DEPLOYMENT.md
+ERROR_HANDLING_*.md
+SCALABILITY_*.md
+AWS_*.md
+EC2_*.md
 
-# Backend documentation
+# Backend documentation (keep only backend/README.md)
 backend/*_COMPLETE.md
 backend/*_SUMMARY.md
 backend/*_GUIDE.md
 backend/*_SETUP.md
 backend/*_REPORT.md
 backend/*_STATUS.md
+backend/*_FIX*.md
 backend/TASK_*.md
 backend/README_AUTH.md
 backend/README_TESTS.md
 backend/LOGGING.md
 backend/ERROR_HANDLING.md
 backend/API_DOCUMENTATION.md
+backend/QUICK_*.md
+backend/TEST_*.md
+backend/INTEGRATION_*.md
+backend/FIREBASE_*.md
+backend/ELEVENLABS_*.md
+backend/FINAL_*.md
 
-# Mobile documentation
+# Mobile documentation (keep only mobile/README.md)
 mobile/*_SUMMARY.md
 mobile/*_QUICK_START.md
 mobile/ERROR_HANDLING.md
 mobile/USER_GUIDE.md
+mobile/INTEGRATION_*.md
 mobile/lib/utils/README*.md
 mobile/lib/services/README*.md
 mobile/lib/config/README.md
@@ -114,7 +144,24 @@ mobile/lib/config/README.md
 # Module-specific docs
 backend/src/modules/rtc/ANALYTICS_MONITORING.md
 
-# Helper scripts
+# Integration test README (keep the main one)
+mobile/integration_test/README.md
+
+# GitHub internal docs (keep workflows only)
+.github/CICD.md
+
+# ============================================
+# SCRIPTS & HELPERS
+# ============================================
+
+# Setup & deployment scripts
+deploy-*.sh
+ec2-setup.sh
+setup.sh
+setup.bat
+cleanup-git.sh
+
+# Backend helper scripts
 backend/setup-tests.sh
 backend/clear-rate-limit.sh
 backend/fix-video-call-*.sh
@@ -123,12 +170,12 @@ backend/fix-video-call-*.sh
 backend/database/create_video_tables.sql
 backend/database/migrations/fix-video-call-fk.sql
 
-# Deployment scripts (keep in private repo only)
-deploy-*.sh
-ec2-setup.sh
-setup.sh
-setup.bat
-cleanup-git.sh
+# Lesson generator helper
+lesson-generator-helper.js
+
+# ============================================
+# CONFIG FILES (Keep essential ones)
+# ============================================
 *.yaml
 !docker-compose.yml
 !docker-compose.prod.yml
@@ -137,11 +184,25 @@ cleanup-git.sh
 !mobile/analysis_options.yaml
 !k8s/*.yaml
 
-# Load test files
+# ============================================
+# TESTING & LOAD TESTS
+# ============================================
 load-tests/
 
-# Lesson generator helper
-lesson-generator-helper.js
-
-# Kiro specs (internal development docs)
+# ============================================
+# KIRO IDE (Internal development)
+# ============================================
 .kiro/specs/
+
+# ============================================
+# KEEP THESE ESSENTIAL FILES
+# ============================================
+# ✅ README.md (root)
+# ✅ DEPLOYMENT.md (root)
+# ✅ backend/README.md
+# ✅ mobile/README.md
+# ✅ All source code
+# ✅ CI/CD workflows (.github/workflows/)
+# ✅ Docker configs
+# ✅ K8s configs
+# ✅ Essential scripts (mobile/run_integration_tests.sh, backend/database/init.sh)
