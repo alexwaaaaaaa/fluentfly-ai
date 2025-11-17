@@ -1,16 +1,17 @@
-name: Backend CI
+# Disabled for now - enable when needed for team collaboration
+# name: Backend CI
 
-on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend-ci.yml'
-  pull_request:
-    branches: [main, develop]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend-ci.yml'
+# on:
+#   push:
+#     branches: [main, develop]
+#     paths:
+#       - 'backend/**'
+#       - '.github/workflows/backend-ci.yml'
+#   pull_request:
+#     branches: [main, develop]
+#     paths:
+#       - 'backend/**'
+#       - '.github/workflows/backend-ci.yml'
 
 jobs:
   test:

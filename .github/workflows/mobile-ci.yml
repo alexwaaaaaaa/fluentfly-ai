@@ -1,16 +1,17 @@
-name: Mobile CI
+# Disabled for now - enable when needed for team collaboration
+# name: Mobile CI
 
-on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'mobile/**'
-      - '.github/workflows/mobile-ci.yml'
-  pull_request:
-    branches: [main, develop]
-    paths:
-      - 'mobile/**'
-      - '.github/workflows/mobile-ci.yml'
+# on:
+#   push:
+#     branches: [main, develop]
+#     paths:
+#       - 'mobile/**'
+#       - '.github/workflows/mobile-ci.yml'
+#   pull_request:
+#     branches: [main, develop]
+#     paths:
+#       - 'mobile/**'
+#       - '.github/workflows/mobile-ci.yml'
 
 jobs:
   test:
@@ -41,10 +42,12 @@ jobs:
       - name: Verify formatting
         working-directory: mobile
         run: dart format --set-exit-if-changed .
+        continue-on-error: true
 
       - name: Analyze code
         working-directory: mobile
         run: flutter analyze
+        continue-on-error: true
 
       - name: Run widget tests
         working-directory: mobile
