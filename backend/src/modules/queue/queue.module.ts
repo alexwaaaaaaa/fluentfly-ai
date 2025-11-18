@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getQueueConfig, QUEUES } from '../../config/queue.config';
 import { AudioProcessingProcessor } from './processors/audio-processing.processor';
