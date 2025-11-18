@@ -108,7 +108,9 @@ jobs:
             cd /home/ubuntu/fluentfly-ai
             
             echo "📦 Pulling latest code..."
+            git stash
             git pull origin main
+            git stash pop || true
             
             echo "🐳 Rebuilding containers..."
             docker-compose pull
