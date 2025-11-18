@@ -45,6 +45,9 @@ COPY --chown=nestjs:nodejs package*.json ./
 # Copy database files for initialization
 COPY --chown=nestjs:nodejs database ./database
 
+# Create logs directory with proper permissions
+RUN mkdir -p logs && chown -R nestjs:nodejs logs
+
 # Switch to non-root user
 USER nestjs
 
