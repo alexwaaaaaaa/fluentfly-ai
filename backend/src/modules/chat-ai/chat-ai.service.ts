@@ -4,7 +4,11 @@ import { OpenAiProvider } from './providers/openai.provider';
 import { RedisService } from '../../common/redis/redis.service';
 import { SpeechService } from '../speech/speech.service';
 import { ChatResponse } from './dto/chat-turn.dto';
-import { FeedbackResponse, DetailedAnalysis, GrammarError } from './dto/feedback-request.dto';
+import {
+  FeedbackResponse,
+  DetailedAnalysis,
+  GrammarError,
+} from './dto/feedback-request.dto';
 import { WordConfidence } from '../speech/dto/stt-response.dto';
 
 @Injectable()

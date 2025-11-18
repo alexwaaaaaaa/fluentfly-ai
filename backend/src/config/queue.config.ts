@@ -5,14 +5,14 @@ export const getQueueConfig = (
   configService: ConfigService,
 ): BullModuleOptions => {
   const redisUrl = configService.get<string>('REDIS_URL');
-  
+
   if (!redisUrl) {
     throw new Error('REDIS_URL is required for queue system');
   }
 
   // Parse Redis URL
   const url = new URL(redisUrl);
-  
+
   return {
     redis: {
       host: url.hostname,

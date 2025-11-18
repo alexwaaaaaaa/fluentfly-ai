@@ -9,11 +9,7 @@ import { RedisModule } from '../../common/redis/redis.module';
 import { SpeechModule } from '../speech/speech.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ChatSession]),
-    RedisModule,
-    SpeechModule,
-  ],
+  imports: [TypeOrmModule.forFeature([ChatSession]), RedisModule, SpeechModule],
   controllers: [ChatAiController],
   providers: [ChatAiService, GeminiProvider, OpenAiProvider],
   exports: [ChatAiService],

@@ -140,19 +140,19 @@ export class GamificationService {
     switch (type) {
       case 'streak':
         return user.streak >= value;
-      
+
       case 'xp':
         return user.xp >= value;
-      
+
       case 'lessons_completed':
         // Would need to query progress table
         // For now, return false as we don't have progress data here
         return false;
-      
+
       case 'vocabulary_learned':
         // Would need to track vocabulary count
         return false;
-      
+
       default:
         return false;
     }
@@ -170,7 +170,9 @@ export class GamificationService {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
+    const lastActive = user.lastActiveDate
+      ? new Date(user.lastActiveDate)
+      : null;
     let streakIncremented = false;
     let bonusXp = 0;
 

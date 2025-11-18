@@ -69,8 +69,7 @@ Responses include cache headers. Clients should respect cache-control directives
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
-    operationIdFactory: (controllerKey: string, methodKey: string) =>
-      methodKey,
+    operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   });
 
   SwaggerModule.setup('api/docs', app, document, {

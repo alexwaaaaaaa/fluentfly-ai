@@ -15,7 +15,9 @@ export class SpeechService {
     const region = process.env.AZURE_SPEECH_REGION || 'eastus';
 
     if (!subscriptionKey) {
-      this.logger.warn('Azure Speech key not configured - Speech services will be disabled');
+      this.logger.warn(
+        'Azure Speech key not configured - Speech services will be disabled',
+      );
       this.speechConfig = null;
       this.isConfigured = false;
       return;
@@ -38,10 +40,7 @@ export class SpeechService {
    * @returns Hash string
    */
   private generateHash(text: string, voice: string): string {
-    return crypto
-      .createHash('sha256')
-      .update(`${text}:${voice}`)
-      .digest('hex');
+    return crypto.createHash('sha256').update(`${text}:${voice}`).digest('hex');
   }
 
   /**
@@ -51,7 +50,9 @@ export class SpeechService {
    */
   async textToSpeech(text: string): Promise<string> {
     if (!this.isConfigured) {
-      this.logger.warn('Azure Speech not configured - returning placeholder URL');
+      this.logger.warn(
+        'Azure Speech not configured - returning placeholder URL',
+      );
       return 'https://placeholder.com/audio.mp3';
     }
 
@@ -113,14 +114,16 @@ export class SpeechService {
             this.logger.error(
               `Speech synthesis failed: ${result.errorDetails}`,
             );
-            reject(new Error(`Speech synthesis failed: ${result.errorDetails}`));
+            reject(
+              new Error(`Speech synthesis failed: ${result.errorDetails}`),
+            );
           }
           synthesizer.close();
         },
-        (error) => {
+        (error: string) => {
           this.logger.error('Speech synthesis error', error);
           synthesizer.close();
-          reject(error);
+          reject(new Error(error));
         },
       );
     });
@@ -182,14 +185,16 @@ export class SpeechService {
             this.logger.error(
               `Speech recognition failed: ${result.errorDetails}`,
             );
-            reject(new Error(`Speech recognition failed: ${result.errorDetails}`));
+            reject(
+              new Error(`Speech recognition failed: ${result.errorDetails}`),
+            );
           }
           recognizer.close();
         },
-        (error) => {
+        (error: string) => {
           this.logger.error('Speech recognition error', error);
           recognizer.close();
-          reject(error);
+          reject(new Error(error));
         },
       );
     });
@@ -200,7 +205,9 @@ export class SpeechService {
    * @param result - Speech recognition result
    * @returns Array of word confidence scores
    */
-  private parseWordConfidence(result: sdk.SpeechRecognitionResult): WordConfidence[] {
+  private parseWordConfidence(
+    result: sdk.SpeechRecognitionResult,
+  ): WordConfidence[] {
     try {
       const jsonResult = result.properties.getProperty(
         sdk.PropertyId.SpeechServiceResponse_JsonResult,

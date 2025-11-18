@@ -18,10 +18,12 @@ export class AiFeedbackProcessor {
       // - Generate feedback using Gemini/OpenAI
       // - Calculate score
       // - Save to database
-      
-      this.logger.log(`Feedback generated for user ${userId}, lesson ${lessonId}`);
-      return { 
-        success: true, 
+
+      this.logger.log(
+        `Feedback generated for user ${userId}, lesson ${lessonId}`,
+      );
+      return {
+        success: true,
         score: 85,
         feedback: 'Good job!',
       };

@@ -15,7 +15,9 @@ describe('RTC (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, transform: true }),
+    );
     await app.init();
 
     // Create a test user and get auth token
@@ -219,9 +221,7 @@ describe('RTC (e2e)', () => {
     });
 
     it('should return 401 for unauthenticated request', () => {
-      return request(app.getHttpServer())
-        .get('/api/rtc/sessions')
-        .expect(401);
+      return request(app.getHttpServer()).get('/api/rtc/sessions').expect(401);
     });
   });
 

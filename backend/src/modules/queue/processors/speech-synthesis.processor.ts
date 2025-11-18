@@ -18,7 +18,7 @@ export class SpeechSynthesisProcessor {
       // - Generate audio file
       // - Upload to S3/R2
       // - Return audio URL
-      
+
       this.logger.log(`Speech synthesized successfully for user ${userId}`);
       return { success: true, audioUrl: 'https://example.com/audio.mp3' };
     } catch (error) {

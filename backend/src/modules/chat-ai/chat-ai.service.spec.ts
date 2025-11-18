@@ -68,7 +68,9 @@ describe('ChatAiService', () => {
 
       mockRedisService.get.mockResolvedValue([]);
       mockGeminiProvider.generate.mockResolvedValue(aiResponse);
-      mockSpeechService.textToSpeech.mockResolvedValue('https://audio.url/tts.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://audio.url/tts.mp3',
+      );
       mockRedisService.set.mockResolvedValue('OK');
 
       const result = await service.processTurn(userText, userId);
@@ -94,7 +96,9 @@ describe('ChatAiService', () => {
       mockRedisService.get.mockResolvedValue([]);
       mockGeminiProvider.generate.mockRejectedValue(new Error('Gemini error'));
       mockOpenAiProvider.generate.mockResolvedValue(aiResponse);
-      mockSpeechService.textToSpeech.mockResolvedValue('https://audio.url/tts.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://audio.url/tts.mp3',
+      );
       mockRedisService.set.mockResolvedValue('OK');
 
       const result = await service.processTurn(userText, userId);
@@ -111,7 +115,9 @@ describe('ChatAiService', () => {
       mockRedisService.get.mockResolvedValue([]);
       mockGeminiProvider.generate.mockRejectedValue(new Error('Gemini error'));
       mockOpenAiProvider.generate.mockRejectedValue(new Error('OpenAI error'));
-      mockSpeechService.textToSpeech.mockResolvedValue('https://audio.url/fallback.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://audio.url/fallback.mp3',
+      );
 
       const result = await service.processTurn(userText, userId);
 
@@ -132,12 +138,17 @@ describe('ChatAiService', () => {
 
       mockRedisService.get.mockResolvedValue(context);
       mockGeminiProvider.generate.mockResolvedValue(aiResponse);
-      mockSpeechService.textToSpeech.mockResolvedValue('https://audio.url/tts.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://audio.url/tts.mp3',
+      );
       mockRedisService.set.mockResolvedValue('OK');
 
       await service.processTurn(userText, userId);
 
-      expect(mockGeminiProvider.generate).toHaveBeenCalledWith(userText, context);
+      expect(mockGeminiProvider.generate).toHaveBeenCalledWith(
+        userText,
+        context,
+      );
       expect(mockRedisService.set).toHaveBeenCalled();
       // Verify context was updated with new messages
       const setCall = mockRedisService.set.mock.calls[0];
@@ -160,7 +171,10 @@ describe('ChatAiService', () => {
         emotion: 'neutral',
       });
 
-      const result = await service.generateFeedback(transcript, wordConfidences);
+      const result = await service.generateFeedback(
+        transcript,
+        wordConfidences,
+      );
 
       expect(result.pronunciation).toBe(85); // (0.9 + 0.8) / 2 * 100
       expect(result).toHaveProperty('fluency');
@@ -203,11 +217,15 @@ describe('ChatAiService', () => {
       ];
 
       mockGeminiProvider.generate.mockResolvedValue({
-        reply: '{"score": 60, "errors": [{"text": "Hello", "correction": "Hello", "explanation": "Pronunciation needs work"}]}',
+        reply:
+          '{"score": 60, "errors": [{"text": "Hello", "correction": "Hello", "explanation": "Pronunciation needs work"}]}',
         emotion: 'neutral',
       });
 
-      const result = await service.generateFeedback(transcript, wordConfidences);
+      const result = await service.generateFeedback(
+        transcript,
+        wordConfidences,
+      );
 
       expect(result.tips).toBeDefined();
       expect(result.tips.length).toBeGreaterThan(0);

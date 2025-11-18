@@ -17,7 +17,7 @@ export class AudioProcessingProcessor {
       // - Download audio from URL
       // - Process with speech recognition
       // - Save results to database
-      
+
       this.logger.log(`Audio processed successfully for user ${userId}`);
       return { success: true, userId, sessionId };
     } catch (error) {

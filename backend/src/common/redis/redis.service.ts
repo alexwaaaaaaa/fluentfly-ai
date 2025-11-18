@@ -18,23 +18,24 @@ export class RedisService implements OnModuleDestroy {
   async get<T>(key: string): Promise<T | null> {
     const cached = await this.client.get(key);
     if (!cached) return null;
-    
+
     // For simple strings (like OTP codes), return as-is without JSON parsing
     // Only try JSON parsing if the value looks like JSON (starts with { or [)
     if (cached.startsWith('{') || cached.startsWith('[')) {
       try {
-        return JSON.parse(cached);
+        return JSON.parse(cached) as T;
       } catch {
-        return cached as any;
+        return cached as T;
       }
     }
-    
+
     // Return string values as-is
-    return cached as any;
+    return cached as T;
   }
 
-  async set(key: string, value: any, ttl: number = 3600): Promise<void> {
-    const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+  async set(key: string, value: unknown, ttl: number = 3600): Promise<void> {
+    const stringValue =
+      typeof value === 'string' ? value : JSON.stringify(value);
     await this.client.setex(key, ttl, stringValue);
   }
 

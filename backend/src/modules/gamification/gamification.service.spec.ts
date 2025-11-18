@@ -65,7 +65,10 @@ describe('GamificationService', () => {
         GamificationService,
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
         { provide: getRepositoryToken(Badge), useValue: mockBadgeRepository },
-        { provide: getRepositoryToken(UserBadge), useValue: mockUserBadgeRepository },
+        {
+          provide: getRepositoryToken(UserBadge),
+          useValue: mockUserBadgeRepository,
+        },
         { provide: RedisService, useValue: mockRedisService },
       ],
     }).compile();
@@ -73,7 +76,9 @@ describe('GamificationService', () => {
     service = module.get<GamificationService>(GamificationService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
     badgeRepository = module.get<Repository<Badge>>(getRepositoryToken(Badge));
-    userBadgeRepository = module.get<Repository<UserBadge>>(getRepositoryToken(UserBadge));
+    userBadgeRepository = module.get<Repository<UserBadge>>(
+      getRepositoryToken(UserBadge),
+    );
     redisService = module.get<RedisService>(RedisService);
 
     jest.clearAllMocks();
@@ -87,7 +92,10 @@ describe('GamificationService', () => {
     it('should award XP without streak bonus', async () => {
       const userWithoutStreak = { ...mockUser, streak: 0 };
       mockUserRepository.findOne.mockResolvedValue(userWithoutStreak);
-      mockUserRepository.save.mockResolvedValue({ ...userWithoutStreak, xp: 60 });
+      mockUserRepository.save.mockResolvedValue({
+        ...userWithoutStreak,
+        xp: 60,
+      });
       mockBadgeRepository.find.mockResolvedValue([]);
       mockUserBadgeRepository.find.mockResolvedValue([]);
       mockRedisService.del.mockResolvedValue(1);
@@ -115,7 +123,11 @@ describe('GamificationService', () => {
     it('should detect level up', async () => {
       const userNearLevelUp = { ...mockUser, xp: 95, level: 'A1' };
       mockUserRepository.findOne.mockResolvedValue(userNearLevelUp);
-      mockUserRepository.save.mockResolvedValue({ ...userNearLevelUp, xp: 110, level: 'A2' });
+      mockUserRepository.save.mockResolvedValue({
+        ...userNearLevelUp,
+        xp: 110,
+        level: 'A2',
+      });
       mockBadgeRepository.find.mockResolvedValue([]);
       mockUserBadgeRepository.find.mockResolvedValue([]);
       mockRedisService.del.mockResolvedValue(1);
@@ -129,7 +141,9 @@ describe('GamificationService', () => {
     it('should not level up if threshold not reached', async () => {
       const userWithoutStreak = { ...mockUser, streak: 0, xp: 50 };
       mockUserRepository.findOne.mockResolvedValue(userWithoutStreak);
-      mockUserRepository.save.mockImplementation((user) => Promise.resolve(user));
+      mockUserRepository.save.mockImplementation((user) =>
+        Promise.resolve(user),
+      );
       mockBadgeRepository.find.mockResolvedValue([]);
       mockUserBadgeRepository.find.mockResolvedValue([]);
       mockRedisService.del.mockResolvedValue(1);
@@ -209,10 +223,16 @@ describe('GamificationService', () => {
     it('should increment streak for consecutive day', async () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      const userWithYesterdayActivity = { ...mockUser, lastActiveDate: yesterday };
+      const userWithYesterdayActivity = {
+        ...mockUser,
+        lastActiveDate: yesterday,
+      };
 
       mockUserRepository.findOne.mockResolvedValue(userWithYesterdayActivity);
-      mockUserRepository.save.mockResolvedValue({ ...userWithYesterdayActivity, streak: 4 });
+      mockUserRepository.save.mockResolvedValue({
+        ...userWithYesterdayActivity,
+        streak: 4,
+      });
       mockBadgeRepository.find.mockResolvedValue([]);
       mockUserBadgeRepository.find.mockResolvedValue([]);
 
@@ -238,10 +258,17 @@ describe('GamificationService', () => {
     it('should reset streak if broken', async () => {
       const threeDaysAgo = new Date();
       threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-      const userWithBrokenStreak = { ...mockUser, streak: 5, lastActiveDate: threeDaysAgo };
+      const userWithBrokenStreak = {
+        ...mockUser,
+        streak: 5,
+        lastActiveDate: threeDaysAgo,
+      };
 
       mockUserRepository.findOne.mockResolvedValue(userWithBrokenStreak);
-      mockUserRepository.save.mockResolvedValue({ ...userWithBrokenStreak, streak: 1 });
+      mockUserRepository.save.mockResolvedValue({
+        ...userWithBrokenStreak,
+        streak: 1,
+      });
       mockBadgeRepository.find.mockResolvedValue([]);
       mockUserBadgeRepository.find.mockResolvedValue([]);
 
@@ -255,8 +282,24 @@ describe('GamificationService', () => {
   describe('getLeaderboard', () => {
     it('should return cached leaderboard if available', async () => {
       const cachedLeaderboard = [
-        { rank: 1, userId: 1, name: 'User 1', xp: 1000, level: 'C1', streak: 10, profileImageUrl: null },
-        { rank: 2, userId: 2, name: 'User 2', xp: 800, level: 'B2', streak: 5, profileImageUrl: null },
+        {
+          rank: 1,
+          userId: 1,
+          name: 'User 1',
+          xp: 1000,
+          level: 'C1',
+          streak: 10,
+          profileImageUrl: null,
+        },
+        {
+          rank: 2,
+          userId: 2,
+          name: 'User 2',
+          xp: 800,
+          level: 'B2',
+          streak: 5,
+          profileImageUrl: null,
+        },
       ];
 
       mockRedisService.get.mockResolvedValue(cachedLeaderboard);
@@ -309,7 +352,13 @@ describe('GamificationService', () => {
   describe('getUserBadges', () => {
     it('should return user badges', async () => {
       const userBadges = [
-        { id: 1, userId: 1, badgeId: 1, badge: mockBadge, earnedAt: new Date() },
+        {
+          id: 1,
+          userId: 1,
+          badgeId: 1,
+          badge: mockBadge,
+          earnedAt: new Date(),
+        },
       ];
 
       mockUserBadgeRepository.find.mockResolvedValue(userBadges);

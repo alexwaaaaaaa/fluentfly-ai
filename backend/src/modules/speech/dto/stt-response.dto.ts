@@ -21,6 +21,9 @@ export class SttResponseDto {
   @ApiProperty({ description: 'Overall confidence score (0-1)' })
   confidence: number;
 
-  @ApiProperty({ description: 'Word-level confidence scores', type: [WordConfidence] })
+  @ApiProperty({
+    description: 'Word-level confidence scores',
+    type: [WordConfidence],
+  })
   words: WordConfidence[];
 }

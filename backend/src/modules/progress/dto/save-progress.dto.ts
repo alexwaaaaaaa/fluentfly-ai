@@ -6,7 +6,10 @@ export class SaveProgressDto {
   @IsInt()
   lessonId: number;
 
-  @ApiProperty({ description: 'Exercise scores', example: { correct: 8, total: 10, percentage: 80 } })
+  @ApiProperty({
+    description: 'Exercise scores',
+    example: { correct: 8, total: 10, percentage: 80 },
+  })
   @IsObject()
   score: Record<string, any>;
 

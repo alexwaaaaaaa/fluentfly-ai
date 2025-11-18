@@ -57,6 +57,10 @@ async function bootstrap() {
   // Listen on 0.0.0.0 to allow connections from emulator (10.0.2.2)
   await app.listen(port, '0.0.0.0');
   logger.log(`🚀 FluentFly API running on http://0.0.0.0:${port}`, 'Bootstrap');
-  logger.log(`📚 API Documentation available at http://localhost:${port}/api/docs`, 'Bootstrap');
+  logger.log(
+    `📚 API Documentation available at http://localhost:${port}/api/docs`,
+    'Bootstrap',
+  );
 }
-bootstrap();
+
+void bootstrap();

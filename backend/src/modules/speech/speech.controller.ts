@@ -8,7 +8,13 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { SpeechService } from './speech.service';
 import { TtsRequestDto } from './dto/tts-request.dto';
 import { SttResponseDto } from './dto/stt-response.dto';
@@ -29,13 +35,18 @@ export class SpeechController {
     schema: {
       type: 'object',
       properties: {
-        audioUrl: { type: 'string', example: 'https://cdn.example.com/audio/abc123.mp3' },
+        audioUrl: {
+          type: 'string',
+          example: 'https://cdn.example.com/audio/abc123.mp3',
+        },
       },
     },
   })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async textToSpeech(@Body() dto: TtsRequestDto): Promise<{ audioUrl: string }> {
+  async textToSpeech(
+    @Body() dto: TtsRequestDto,
+  ): Promise<{ audioUrl: string }> {
     const audioUrl = await this.speechService.textToSpeech(dto.text);
     return { audioUrl };
   }

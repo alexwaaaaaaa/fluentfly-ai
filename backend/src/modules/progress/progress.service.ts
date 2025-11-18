@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Progress } from './entities/progress.entity';
 import { SaveProgressDto } from './dto/save-progress.dto';
-import { ProgressResponseDto, ProgressStatsDto } from './dto/progress-response.dto';
+import {
+  ProgressResponseDto,
+  ProgressStatsDto,
+} from './dto/progress-response.dto';
 
 @Injectable()
 export class ProgressService {
@@ -86,10 +89,8 @@ export class ProgressService {
     );
     const averageScore =
       scoresWithPercentage.length > 0
-        ? scoresWithPercentage.reduce(
-            (sum, p) => sum + p.score.percentage,
-            0,
-          ) / scoresWithPercentage.length
+        ? scoresWithPercentage.reduce((sum, p) => sum + p.score.percentage, 0) /
+          scoresWithPercentage.length
         : 0;
 
     // Calculate total XP (25 XP per completed lesson)

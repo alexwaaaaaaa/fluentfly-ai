@@ -10,7 +10,10 @@ import {
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ProgressService } from './progress.service';
 import { SaveProgressDto } from './dto/save-progress.dto';
-import { ProgressResponseDto, ProgressStatsDto } from './dto/progress-response.dto';
+import {
+  ProgressResponseDto,
+  ProgressStatsDto,
+} from './dto/progress-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThan } from 'typeorm';
+import { Repository } from 'typeorm';
 import { VideoCallSession } from './entities/video-call-session.entity';
 import { RedisService } from '../../common/redis/redis.service';
 
@@ -149,7 +149,10 @@ export class MonitoringService {
    * @param roomName - Room name
    * @param responseTime - Response time in milliseconds
    */
-  async logAiResponseTime(roomName: string, responseTime: number): Promise<void> {
+  async logAiResponseTime(
+    roomName: string,
+    responseTime: number,
+  ): Promise<void> {
     const key = `rtc:response-times:${Date.now()}`;
     await this.redisService.set(
       key,
@@ -207,7 +210,10 @@ export class MonitoringService {
 
     // Get recent errors (last 10)
     const recentErrors = validErrors
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      )
       .slice(0, 10)
       .map((e) => ({
         type: e.type,
@@ -239,7 +245,9 @@ export class MonitoringService {
       }),
     );
 
-    const validResponses = responses.filter((r) => r !== null && r.responseTime);
+    const validResponses = responses.filter(
+      (r) => r !== null && r.responseTime,
+    );
 
     if (validResponses.length === 0) {
       return {
@@ -343,7 +351,9 @@ export class MonitoringService {
       const keys = await this.redisService.get<string[]>(keysSetName);
       return keys || [];
     } catch (error) {
-      this.logger.warn(`Failed to get keys with prefix ${prefix}: ${error.message}`);
+      this.logger.warn(
+        `Failed to get keys with prefix ${prefix}: ${error.message}`,
+      );
       return [];
     }
   }
@@ -355,8 +365,9 @@ export class MonitoringService {
   async trackKey(key: string): Promise<void> {
     const prefix = key.split(':').slice(0, 2).join(':');
     const keysSetName = `${prefix}:keys`;
-    const existingKeys = (await this.redisService.get<string[]>(keysSetName)) || [];
-    
+    const existingKeys =
+      (await this.redisService.get<string[]>(keysSetName)) || [];
+
     if (!existingKeys.includes(key)) {
       existingKeys.push(key);
       await this.redisService.set(keysSetName, existingKeys, 3600 * 24 * 7);
@@ -385,7 +396,7 @@ export class MonitoringService {
    */
   async clearOldMetrics(): Promise<void> {
     this.logger.log('Clearing old metrics data...');
-    
+
     // Reset hourly counters
     await this.redisService.set('rtc:errors:count', 0, 3600);
     await this.redisService.set('rtc:response-times:count', 0, 3600);

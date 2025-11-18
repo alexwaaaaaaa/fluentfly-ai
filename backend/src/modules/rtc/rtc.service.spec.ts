@@ -118,9 +118,9 @@ describe('RtcService', () => {
     it('should throw error when LiveKit credentials not configured', async () => {
       mockConfigService.get.mockReturnValue(undefined);
 
-      await expect(
-        service.createToken(1, 'test-room'),
-      ).rejects.toThrow('LiveKit API credentials not configured');
+      await expect(service.createToken(1, 'test-room')).rejects.toThrow(
+        'LiveKit API credentials not configured',
+      );
     });
   });
 
@@ -253,9 +253,9 @@ describe('RtcService', () => {
     it('should throw error if session not found', async () => {
       mockSessionRepository.findOne.mockResolvedValue(null);
 
-      await expect(
-        service.endSession(999, []),
-      ).rejects.toThrow('Session 999 not found');
+      await expect(service.endSession(999, [])).rejects.toThrow(
+        'Session 999 not found',
+      );
     });
   });
 

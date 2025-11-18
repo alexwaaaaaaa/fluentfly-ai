@@ -19,10 +19,10 @@ export class LeaderboardEntry {
   @ApiProperty({ example: 15, description: 'Current streak' })
   streak: number;
 
-  @ApiProperty({ 
-    example: 'https://example.com/avatar.jpg', 
+  @ApiProperty({
+    example: 'https://example.com/avatar.jpg',
     description: 'Profile image URL',
-    nullable: true 
+    nullable: true,
   })
   profileImageUrl: string | null;
 }

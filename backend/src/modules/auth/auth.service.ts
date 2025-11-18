@@ -110,14 +110,17 @@ export class AuthService {
       // Check rate limiting - max 5 OTP requests per 15 minutes
       const rateLimitKey = `otp:ratelimit:${phone}`;
       let attempts: string | null = null;
-      
+
       try {
         attempts = await this.redisService.get(rateLimitKey);
       } catch (redisError) {
-        this.logger.warn('Redis unavailable for rate limiting, continuing without it', redisError);
+        this.logger.warn(
+          'Redis unavailable for rate limiting, continuing without it',
+          redisError,
+        );
       }
 
-      if (attempts && parseInt(attempts as string) >= 5) {
+      if (attempts && parseInt(attempts) >= 5) {
         throw new BadRequestException(
           'Too many OTP requests. Please try again after 15 minutes.',
         );
@@ -132,10 +135,17 @@ export class AuthService {
         await this.redisService.set(otpKey, otp, 900); // 15 minutes
 
         // Increment rate limit counter
-        const currentAttempts = attempts ? parseInt(attempts as string) + 1 : 1;
-        await this.redisService.set(rateLimitKey, currentAttempts.toString(), 900); // 15 minutes
+        const currentAttempts = attempts ? parseInt(attempts) + 1 : 1;
+        await this.redisService.set(
+          rateLimitKey,
+          currentAttempts.toString(),
+          900,
+        ); // 15 minutes
       } catch (redisError) {
-        this.logger.error('Redis error storing OTP, falling back to in-memory', redisError);
+        this.logger.error(
+          'Redis error storing OTP, falling back to in-memory',
+          redisError,
+        );
         // In production, you might want to use an in-memory fallback
         // For now, we'll continue but log the error
       }
@@ -160,7 +170,7 @@ export class AuthService {
     // Get stored OTP from Redis
     const otpKey = `otp:${phone}`;
     let storedOtp: string | null = null;
-    
+
     try {
       storedOtp = await this.redisService.get(otpKey);
     } catch (redisError) {
@@ -173,10 +183,14 @@ export class AuthService {
     }
 
     // Debug logging
-    this.logger.debug(`Comparing OTPs - Stored: "${storedOtp}" (type: ${typeof storedOtp}), Received: "${otp}" (type: ${typeof otp})`);
+    this.logger.debug(
+      `Comparing OTPs - Stored: "${storedOtp}" (type: ${typeof storedOtp}), Received: "${otp}" (type: ${typeof otp})`,
+    );
 
     if (storedOtp !== otp) {
-      this.logger.warn(`OTP mismatch - Stored: "${storedOtp}", Received: "${otp}"`);
+      this.logger.warn(
+        `OTP mismatch - Stored: "${storedOtp}", Received: "${otp}"`,
+      );
       throw new UnauthorizedException('Invalid OTP');
     }
 

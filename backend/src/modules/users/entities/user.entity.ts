@@ -31,10 +31,20 @@ export class User {
   @Column({ type: 'varchar', length: 10, default: 'A1' })
   level: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true, name: 'learning_purpose' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    name: 'learning_purpose',
+  })
   learningPurpose: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true, name: 'english_level' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    name: 'english_level',
+  })
   englishLevel: string;
 
   @Column({ type: 'date', nullable: true, name: 'last_active_date' })

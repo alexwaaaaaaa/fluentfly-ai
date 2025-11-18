@@ -64,10 +64,7 @@ export class QueueService {
   }
 
   // Video call cleanup
-  async cleanupVideoCall(data: {
-    sessionId: number;
-    roomName: string;
-  }) {
+  async cleanupVideoCall(data: { sessionId: number; roomName: string }) {
     return this.cleanupQueue.add('cleanup', data, {
       priority: JOB_PRIORITY.NORMAL,
       delay: 60000, // 1 minute delay

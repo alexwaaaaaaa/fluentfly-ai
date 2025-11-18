@@ -39,7 +39,9 @@ Return ONLY valid JSON in this format: {"reply":"...","emotion":"happy|neutral|e
     const prompt = `${systemPrompt}\n\nConversation:\n${conversationHistory}\n\nUser: ${userText}\n\nAssistant:`;
 
     try {
-      this.logger.log(`Generating response with Gemini for: ${userText.substring(0, 50)}...`);
+      this.logger.log(
+        `Generating response with Gemini for: ${userText.substring(0, 50)}...`,
+      );
 
       const result = await this.model.generateContent(prompt);
       const response = await result.response;

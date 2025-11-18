@@ -17,7 +17,7 @@ export class AnalyticsProcessor {
       // - Send to analytics service (Mixpanel, Amplitude, etc.)
       // - Store in data warehouse
       // - Update user metrics
-      
+
       this.logger.log(`Event tracked: ${event} for user ${userId}`);
       return { success: true };
     } catch (error) {

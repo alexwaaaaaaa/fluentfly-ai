@@ -8,12 +8,21 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ChatAiService } from './chat-ai.service';
 import { ChatTurnDto, ChatResponse } from './dto/chat-turn.dto';
-import { FeedbackRequestDto, FeedbackResponse } from './dto/feedback-request.dto';
+import {
+  FeedbackRequestDto,
+  FeedbackResponse,
+} from './dto/feedback-request.dto';
 import { SpeechService } from '../speech/speech.service';
 
 @ApiTags('chat')

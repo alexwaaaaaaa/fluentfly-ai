@@ -61,14 +61,21 @@ describe('LessonsService', () => {
       providers: [
         LessonsService,
         { provide: getRepositoryToken(Lesson), useValue: mockLessonRepository },
-        { provide: getRepositoryToken(Exercise), useValue: mockExerciseRepository },
+        {
+          provide: getRepositoryToken(Exercise),
+          useValue: mockExerciseRepository,
+        },
         { provide: RedisService, useValue: mockRedisService },
       ],
     }).compile();
 
     service = module.get<LessonsService>(LessonsService);
-    lessonRepository = module.get<Repository<Lesson>>(getRepositoryToken(Lesson));
-    exerciseRepository = module.get<Repository<Exercise>>(getRepositoryToken(Exercise));
+    lessonRepository = module.get<Repository<Lesson>>(
+      getRepositoryToken(Lesson),
+    );
+    exerciseRepository = module.get<Repository<Exercise>>(
+      getRepositoryToken(Exercise),
+    );
     redisService = module.get<RedisService>(RedisService);
 
     jest.clearAllMocks();
@@ -259,7 +266,9 @@ describe('LessonsService', () => {
       mockRedisService.get.mockResolvedValue(null);
       mockLessonRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.getExercises(999)).rejects.toThrow(NotFoundException);
+      await expect(service.getExercises(999)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should order exercises by orderIndex', async () => {
@@ -288,7 +297,9 @@ describe('LessonsService', () => {
 
       expect(mockRedisService.del).toHaveBeenCalledWith('lesson:1');
       expect(mockRedisService.del).toHaveBeenCalledWith('lesson:1:exercises');
-      expect(mockRedisService.del).toHaveBeenCalledWith('lesson:1:exercises-only');
+      expect(mockRedisService.del).toHaveBeenCalledWith(
+        'lesson:1:exercises-only',
+      );
       expect(mockRedisService.invalidate).toHaveBeenCalledWith('lessons:*');
     });
 

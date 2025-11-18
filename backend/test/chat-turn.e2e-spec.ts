@@ -18,7 +18,7 @@ describe('Complete Chat Turn Flow (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -49,7 +49,9 @@ describe('Complete Chat Turn Flow (e2e)', () => {
   afterAll(async () => {
     // Clean up test data
     if (dataSource && testUserId) {
-      await dataSource.query('DELETE FROM chat_sessions WHERE user_id = $1', [testUserId]);
+      await dataSource.query('DELETE FROM chat_sessions WHERE user_id = $1', [
+        testUserId,
+      ]);
       await dataSource.query('DELETE FROM users WHERE id = $1', [testUserId]);
     }
     await app.close();
@@ -73,11 +75,13 @@ describe('Complete Chat Turn Flow (e2e)', () => {
       if (response.status === 201) {
         expect(response.body).toHaveProperty('reply');
         expect(response.body).toHaveProperty('emotion');
-        expect(['happy', 'neutral', 'encouraging']).toContain(response.body.emotion);
+        expect(['happy', 'neutral', 'encouraging']).toContain(
+          response.body.emotion,
+        );
         expect(response.body).toHaveProperty('ttsUrl');
         expect(typeof response.body.reply).toBe('string');
         expect(response.body.reply.length).toBeGreaterThan(0);
-        
+
         // TTS URL should be a valid URL or empty string
         if (response.body.ttsUrl) {
           expect(typeof response.body.ttsUrl).toBe('string');
@@ -158,7 +162,7 @@ describe('Complete Chat Turn Flow (e2e)', () => {
 
     it('should reject text exceeding max length', async () => {
       const longText = 'a'.repeat(501); // Max is 500
-      
+
       await request(app.getHttpServer())
         .post('/chat/turn')
         .set('Authorization', `Bearer ${authToken}`)
@@ -173,7 +177,7 @@ describe('Complete Chat Turn Flow (e2e)', () => {
         .post('/chat/turn')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
-          text: 'Hello! How are you? I\'m learning English.',
+          text: "Hello! How are you? I'm learning English.",
         })
         .expect((res) => {
           expect([201, 400, 500, 503]).toContain(res.status);
@@ -193,7 +197,7 @@ describe('Complete Chat Turn Flow (e2e)', () => {
           { word: 'Hello', confidence: 0.95 },
           { word: 'how', confidence: 0.92 },
           { word: 'are', confidence: 0.88 },
-          { word: 'you', confidence: 0.90 },
+          { word: 'you', confidence: 0.9 },
           { word: 'today', confidence: 0.85 },
         ],
       };
@@ -211,12 +215,12 @@ describe('Complete Chat Turn Flow (e2e)', () => {
         expect(response.body).toHaveProperty('pronunciation');
         expect(response.body).toHaveProperty('grammar');
         expect(response.body).toHaveProperty('tips');
-        
+
         expect(typeof response.body.fluency).toBe('number');
         expect(typeof response.body.pronunciation).toBe('number');
         expect(typeof response.body.grammar).toBe('number');
         expect(Array.isArray(response.body.tips)).toBe(true);
-        
+
         // Scores should be between 0 and 100
         expect(response.body.fluency).toBeGreaterThanOrEqual(0);
         expect(response.body.fluency).toBeLessThanOrEqual(100);
@@ -287,7 +291,7 @@ describe('Complete Chat Turn Flow (e2e)', () => {
 
       expect(turnResponse.body).toHaveProperty('reply');
       expect(turnResponse.body).toHaveProperty('ttsUrl');
-      
+
       const aiReply = turnResponse.body.reply;
 
       // Step 2: Simulate a conversation
@@ -310,13 +314,14 @@ describe('Complete Chat Turn Flow (e2e)', () => {
         .post('/chat/feedback')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
-          transcript: 'I want to practice speaking English. Can you help me with pronunciation?',
+          transcript:
+            'I want to practice speaking English. Can you help me with pronunciation?',
           wordConfidences: [
             { word: 'I', confidence: 0.98 },
             { word: 'want', confidence: 0.95 },
             { word: 'to', confidence: 0.93 },
             { word: 'practice', confidence: 0.88 },
-            { word: 'speaking', confidence: 0.90 },
+            { word: 'speaking', confidence: 0.9 },
             { word: 'English', confidence: 0.92 },
           ],
         })
@@ -371,7 +376,7 @@ describe('Complete Chat Turn Flow (e2e)', () => {
     it('should rate limit excessive requests', async () => {
       // Note: This test may need adjustment based on rate limit configuration
       const requests = [];
-      
+
       // Send multiple requests rapidly
       for (let i = 0; i < 10; i++) {
         requests.push(
@@ -380,26 +385,32 @@ describe('Complete Chat Turn Flow (e2e)', () => {
             .set('Authorization', `Bearer ${authToken}`)
             .send({
               text: `Test message ${i}`,
-            })
+            }),
         );
       }
 
       const responses = await Promise.all(requests);
-      
+
       // Count different response types
-      const successCount = responses.filter(r => r.status === 200).length;
-      const rateLimitCount = responses.filter(r => r.status === 429).length;
-      const errorCount = responses.filter(r => r.status === 500).length;
-      const otherCount = responses.filter(r => ![200, 429, 500].includes(r.status)).length;
-      
+      const successCount = responses.filter((r) => r.status === 200).length;
+      const rateLimitCount = responses.filter((r) => r.status === 429).length;
+      const errorCount = responses.filter((r) => r.status === 500).length;
+      const otherCount = responses.filter(
+        (r) => ![200, 429, 500].includes(r.status),
+      ).length;
+
       // Debug: log response statuses
-      const statuses = responses.map(r => r.status);
+      const statuses = responses.map((r) => r.status);
       console.log('Response statuses:', statuses);
-      console.log(`Success: ${successCount}, Rate Limited: ${rateLimitCount}, Errors: ${errorCount}, Other: ${otherCount}`);
-      
+      console.log(
+        `Success: ${successCount}, Rate Limited: ${rateLimitCount}, Errors: ${errorCount}, Other: ${otherCount}`,
+      );
+
       // At least some requests should be processed (success, rate limited, or error from external service)
-      expect(successCount + rateLimitCount + errorCount + otherCount).toBeGreaterThan(0);
-      
+      expect(
+        successCount + rateLimitCount + errorCount + otherCount,
+      ).toBeGreaterThan(0);
+
       // If external services are unavailable, all might be 500 errors
       if (errorCount === 10) {
         console.log('External services unavailable, all requests failed');

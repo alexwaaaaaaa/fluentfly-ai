@@ -7,9 +7,13 @@ import { ConfigService } from '@nestjs/config';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private configService: ConfigService) {
     super({
-      clientID: configService.get<string>('GOOGLE_CLIENT_ID') || 'default-client-id',
-      clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET') || 'default-secret',
-      callbackURL: configService.get<string>('GOOGLE_CALLBACK_URL') || 'http://localhost:3000/api/auth/google/callback',
+      clientID:
+        configService.get<string>('GOOGLE_CLIENT_ID') || 'default-client-id',
+      clientSecret:
+        configService.get<string>('GOOGLE_CLIENT_SECRET') || 'default-secret',
+      callbackURL:
+        configService.get<string>('GOOGLE_CALLBACK_URL') ||
+        'http://localhost:3000/api/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }
@@ -20,7 +24,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
   ): Promise<any> {
     const { name, emails, photos } = profile;
-    
+
     if (!emails || emails.length === 0) {
       throw new UnauthorizedException('No email found in Google profile');
     }

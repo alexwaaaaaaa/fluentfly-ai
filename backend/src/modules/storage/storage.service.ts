@@ -66,7 +66,7 @@ export class StorageService {
 
       await this.s3Client.send(command);
       return `${this.cdnUrl}/audio/${key}.mp3`;
-    } catch (error) {
+    } catch {
       // File doesn't exist
       return null;
     }

@@ -16,7 +16,9 @@ export class Exercise {
   @Column({ type: 'int', name: 'lesson_id' })
   lessonId: number;
 
-  @ManyToOne(() => Lesson, (lesson) => lesson.exercises, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Lesson, (lesson) => lesson.exercises, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'lesson_id' })
   lesson: Lesson;
 

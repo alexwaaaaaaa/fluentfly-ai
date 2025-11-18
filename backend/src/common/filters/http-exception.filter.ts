@@ -32,21 +32,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let message = 'Internal server error';
     let error: string | undefined;
     let errors: any = undefined;
-    let details: any;
+    let details: unknown;
     let retryable = false;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
 
-      if (typeof exceptionResponse === 'object') {
-        message =
-          (exceptionResponse as any).message || exception.message;
-        errors = (exceptionResponse as any).errors;
-        error = (exceptionResponse as any).error;
-        details = (exceptionResponse as any).details;
+      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+        const response = exceptionResponse as Record<string, unknown>;
+        message = (response.message as string) || exception.message;
+        errors = response.errors as string[] | undefined;
+        error = response.error as string | undefined;
+        details = response.details;
       } else {
-        message = exceptionResponse as string;
+        message = String(exceptionResponse);
       }
     } else if (exception instanceof Error) {
       message = exception.message;
@@ -74,18 +74,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
 
     // Determine if error is retryable
-    if (status >= 500 || status === 408 || status === 429) {
+    if (
+      status >= HttpStatus.INTERNAL_SERVER_ERROR ||
+      status === HttpStatus.REQUEST_TIMEOUT ||
+      status === HttpStatus.TOO_MANY_REQUESTS
+    ) {
       retryable = true;
     }
 
     // Log error with comprehensive context
+    const requestWithUser = request as Request & { user?: { id: number } };
     this.logger.error({
       message: `HTTP ${status} Error: ${message}`,
       path: request.url,
       method: request.method,
       statusCode: status,
       error: error,
-      userId: (request as any).user?.id,
+      userId: requestWithUser.user?.id,
       userAgent: request.headers['user-agent'],
       ip: request.ip,
       timestamp: new Date().toISOString(),
@@ -117,7 +122,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(status).json(errorResponse);
   }
 
-  private getUserFriendlyMessage(status: number, originalMessage: string): string {
+  private getUserFriendlyMessage(
+    status: number,
+    originalMessage: string,
+  ): string {
     // Provide user-friendly messages for common errors
     const friendlyMessages: Record<number, string> = {
       400: 'Invalid request. Please check your input and try again.',

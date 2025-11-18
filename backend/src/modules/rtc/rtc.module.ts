@@ -28,7 +28,10 @@ import { ConversationTurn } from './entities/conversation-turn.entity';
     MonitoringService,
     {
       provide: 'AI_AGENT_MONITORING_SETUP',
-      useFactory: (aiAgentService: AiAgentService, monitoringService: MonitoringService) => {
+      useFactory: (
+        aiAgentService: AiAgentService,
+        monitoringService: MonitoringService,
+      ) => {
         aiAgentService.setMonitoringService(monitoringService);
         return true;
       },

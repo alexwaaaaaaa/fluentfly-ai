@@ -46,7 +46,9 @@ Return ONLY valid JSON in this format: {"reply":"...","emotion":"happy|neutral|e
     messages.push({ role: 'user', content: userText });
 
     try {
-      this.logger.log(`Generating response with OpenAI for: ${userText.substring(0, 50)}...`);
+      this.logger.log(
+        `Generating response with OpenAI for: ${userText.substring(0, 50)}...`,
+      );
 
       const completion = await this.client.chat.completions.create({
         model: 'gpt-4o-mini',

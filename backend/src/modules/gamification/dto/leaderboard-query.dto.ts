@@ -10,7 +10,11 @@ export class LeaderboardQueryDto {
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ example: 100, description: 'Items per page', default: 100 })
+  @ApiPropertyOptional({
+    example: 100,
+    description: 'Items per page',
+    default: 100,
+  })
   @IsOptional()
   @Type(() => Number)
   @IsInt()

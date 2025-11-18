@@ -14,7 +14,7 @@ describe('Authentication Flow (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     // Apply global validation pipe like in main.ts
     app.useGlobalPipes(
       new ValidationPipe({
@@ -32,7 +32,7 @@ describe('Authentication Flow (e2e)', () => {
   afterAll(async () => {
     // Clean up test data
     if (dataSource) {
-      await dataSource.query('DELETE FROM users WHERE phone LIKE \'+1555%\'');
+      await dataSource.query("DELETE FROM users WHERE phone LIKE '+1555%'");
     }
     await app.close();
   });
@@ -50,7 +50,7 @@ describe('Authentication Flow (e2e)', () => {
       if (response.status !== 200) {
         console.log('Error response:', response.body);
       }
-      
+
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('success', true);
     });
@@ -160,9 +160,7 @@ describe('Authentication Flow (e2e)', () => {
 
   describe('Protected Routes', () => {
     it('should reject requests without authentication token', async () => {
-      await request(app.getHttpServer())
-        .get('/lessons')
-        .expect(401);
+      await request(app.getHttpServer()).get('/lessons').expect(401);
     });
 
     it('should reject requests with invalid token', async () => {

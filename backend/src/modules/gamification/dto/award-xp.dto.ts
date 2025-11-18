@@ -7,7 +7,10 @@ export class AwardXpDto {
   @IsPositive()
   amount: number;
 
-  @ApiProperty({ example: 'lesson_completed', description: 'Reason for XP award' })
+  @ApiProperty({
+    example: 'lesson_completed',
+    description: 'Reason for XP award',
+  })
   @IsString()
   @MaxLength(100)
   reason: string;

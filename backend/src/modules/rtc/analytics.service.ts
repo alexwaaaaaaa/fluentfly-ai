@@ -74,7 +74,10 @@ export class AnalyticsService {
     const totalCalls = sessions.length;
 
     // Calculate average call duration
-    const totalDuration = sessions.reduce((sum, s) => sum + (s.duration || 0), 0);
+    const totalDuration = sessions.reduce(
+      (sum, s) => sum + (s.duration || 0),
+      0,
+    );
     const averageCallDuration = totalDuration / totalCalls;
 
     // Calculate total speaking and listening time
@@ -99,7 +102,8 @@ export class AnalyticsService {
       .map((s) => s.analytics.fluencyScore);
     const averageFluencyScore =
       fluencyScores.length > 0
-        ? fluencyScores.reduce((sum, score) => sum + score, 0) / fluencyScores.length
+        ? fluencyScores.reduce((sum, score) => sum + score, 0) /
+          fluencyScores.length
         : 0;
 
     // Calculate fluency improvement (compare first 3 calls vs last 3 calls)
@@ -139,7 +143,7 @@ export class AnalyticsService {
     }
 
     const sampleSize = Math.min(3, Math.floor(fluencyScores.length / 2));
-    
+
     // Get first N scores
     const firstScores = fluencyScores.slice(0, sampleSize);
     const firstAvg =
@@ -209,7 +213,10 @@ export class AnalyticsService {
     }
 
     const totalCalls = sessions.length;
-    const totalDuration = sessions.reduce((sum, s) => sum + (s.duration || 0), 0);
+    const totalDuration = sessions.reduce(
+      (sum, s) => sum + (s.duration || 0),
+      0,
+    );
     const averageDuration = totalDuration / totalCalls;
 
     // Count unique users
@@ -221,7 +228,8 @@ export class AnalyticsService {
       .map((s) => s.analytics.fluencyScore);
     const averageFluencyScore =
       fluencyScores.length > 0
-        ? fluencyScores.reduce((sum, score) => sum + score, 0) / fluencyScores.length
+        ? fluencyScores.reduce((sum, score) => sum + score, 0) /
+          fluencyScores.length
         : 0;
 
     return {
@@ -361,7 +369,10 @@ export class AnalyticsService {
         (turn) => turn.speaker === 'user',
       );
       totalTurns += userTurns.length;
-      totalWords += userTurns.reduce((sum, turn) => sum + (turn.wordCount || 0), 0);
+      totalWords += userTurns.reduce(
+        (sum, turn) => sum + (turn.wordCount || 0),
+        0,
+      );
     });
 
     const averageTurnsPerCall = totalTurns / sessions.length;

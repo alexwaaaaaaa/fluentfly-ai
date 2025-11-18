@@ -1,21 +1,20 @@
-import { 
-  Controller, 
-  Get, 
+import {
+  Controller,
+  Get,
   Post,
   Body,
-  Query, 
-  UseGuards, 
+  Query,
+  UseGuards,
   NotFoundException,
   Logger,
   ParseIntPipe,
-  HttpStatus,
   ForbiddenException,
 } from '@nestjs/common';
-import { 
-  ApiTags, 
-  ApiOperation, 
-  ApiResponse, 
-  ApiBearerAuth, 
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
   ApiQuery,
   ApiBody,
 } from '@nestjs/swagger';
@@ -52,14 +51,16 @@ export class RtcController {
 
   @Get('token')
   @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Generate LiveKit access token for video call session',
-    description: 'Creates a secure token for joining a video call room. Requires authentication and validates lesson access.',
+    description:
+      'Creates a secure token for joining a video call room. Requires authentication and validates lesson access.',
   })
   @ApiQuery({
     name: 'lessonId',
     required: true,
-    description: 'ID of the lesson for the video call session (use 0 for free conversation mode)',
+    description:
+      'ID of the lesson for the video call session (use 0 for free conversation mode)',
     example: 1,
     type: Number,
   })
@@ -69,7 +70,10 @@ export class RtcController {
     type: TokenResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Invalid lesson ID' })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   @ApiResponse({ status: 403, description: 'Forbidden - rate limit exceeded' })
   @ApiResponse({ status: 404, description: 'Lesson not found' })
   @ApiResponse({ status: 429, description: 'Too many requests' })
@@ -82,12 +86,14 @@ export class RtcController {
     // Parse and validate lessonId (allow 0 for free conversation)
     const lessonId = parseInt(lessonIdParam, 10);
     if (isNaN(lessonId) || lessonId < 0) {
-      throw new NotFoundException('Invalid lesson ID - must be a non-negative number');
+      throw new NotFoundException(
+        'Invalid lesson ID - must be a non-negative number',
+      );
     }
 
     // Log token generation request for security audit
     this.logger.log(
-      `Token generation requested - User: ${userId}, Lesson: ${lessonId}, IP: ${user.ip || 'unknown'}`
+      `Token generation requested - User: ${userId}, Lesson: ${lessonId}, IP: ${user.ip || 'unknown'}`,
     );
 
     // Validate lesson exists (skip validation for lessonId 0 which is free conversation)
@@ -96,7 +102,7 @@ export class RtcController {
         await this.lessonsService.findOne(lessonId);
       } catch (error) {
         this.logger.warn(
-          `Token generation failed - Lesson ${lessonId} not found for user ${userId}`
+          `Token generation failed - Lesson ${lessonId} not found for user ${userId}`,
         );
         throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
       }
@@ -109,17 +115,22 @@ export class RtcController {
     const roomName = this.rtcService.generateRoomName(lessonId, userId);
 
     // Create LiveKit token and start session
-    const result = await this.rtcService.createToken(userId, roomName, lessonId);
+    const result = await this.rtcService.createToken(
+      userId,
+      roomName,
+      lessonId,
+    );
 
     // Increment rate limit counter
     await this.incrementRateLimit(userId);
 
     // Get LiveKit URL from config
-    const livekitUrl = this.configService.get<string>('LIVEKIT_URL') || 'ws://localhost:7880';
+    const livekitUrl =
+      this.configService.get<string>('LIVEKIT_URL') || 'ws://localhost:7880';
 
     // Log successful token generation
     this.logger.log(
-      `Token generated successfully - User: ${userId}, Lesson: ${lessonId}, Room: ${roomName}, Session: ${result.sessionId}`
+      `Token generated successfully - User: ${userId}, Lesson: ${lessonId}, Room: ${roomName}, Session: ${result.sessionId}`,
     );
 
     // Log connection event to monitoring
@@ -149,7 +160,7 @@ export class RtcController {
     // TODO: Re-enable rate limiting in production
     // Temporarily disabled for testing
     return;
-    
+
     /* const rateLimitKey = `rtc:token:ratelimit:${userId}`;
     const count = await this.redisService.get<number>(rateLimitKey);
 
@@ -170,7 +181,7 @@ export class RtcController {
   private async incrementRateLimit(userId: number): Promise<void> {
     const rateLimitKey = `rtc:token:ratelimit:${userId}`;
     const count = await this.redisService.get<number>(rateLimitKey);
-    
+
     if (count) {
       await this.redisService.set(rateLimitKey, count + 1, this.RATE_LIMIT_TTL);
     } else {
@@ -182,7 +193,8 @@ export class RtcController {
   @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 requests per minute
   @ApiOperation({
     summary: 'Spawn AI agent in video call room',
-    description: 'Creates an AI agent participant that joins the video call room and interacts with the user.',
+    description:
+      'Creates an AI agent participant that joins the video call room and interacts with the user.',
   })
   @ApiBody({
     schema: {
@@ -219,7 +231,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   @ApiResponse({ status: 404, description: 'Lesson not found' })
   @ApiResponse({ status: 429, description: 'Too many requests' })
   async spawnAgent(
@@ -244,9 +259,7 @@ export class RtcController {
         throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
       }
     } else {
-      this.logger.log(
-        `Free conversation mode - Lesson ID 0, User: ${userId}`,
-      );
+      this.logger.log(`Free conversation mode - Lesson ID 0, User: ${userId}`);
     }
 
     // Spawn the AI agent
@@ -294,11 +307,17 @@ export class RtcController {
       type: 'object',
       properties: {
         success: { type: 'boolean', example: true },
-        message: { type: 'string', example: 'AI agent disconnected successfully' },
+        message: {
+          type: 'string',
+          example: 'AI agent disconnected successfully',
+        },
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async disconnectAgent(
     @CurrentUser() user: any,
     @Body() body: { roomName: string },
@@ -322,7 +341,8 @@ export class RtcController {
   @Get('conversation-history')
   @ApiOperation({
     summary: 'Get conversation history for a room',
-    description: 'Retrieves the conversation history between user and AI agent.',
+    description:
+      'Retrieves the conversation history between user and AI agent.',
   })
   @ApiQuery({
     name: 'roomName',
@@ -343,10 +363,17 @@ export class RtcController {
           items: {
             type: 'object',
             properties: {
-              speaker: { type: 'string', enum: ['user', 'ai'], example: 'user' },
+              speaker: {
+                type: 'string',
+                enum: ['user', 'ai'],
+                example: 'user',
+              },
               text: { type: 'string', example: 'Hello, how are you?' },
               timestamp: { type: 'string', format: 'date-time' },
-              audioUrl: { type: 'string', example: 'https://cdn.example.com/audio.mp3' },
+              audioUrl: {
+                type: 'string',
+                example: 'https://cdn.example.com/audio.mp3',
+              },
             },
           },
         },
@@ -354,7 +381,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getConversationHistory(
     @CurrentUser() user: any,
     @Query('roomName') roomName: string,
@@ -381,7 +411,8 @@ export class RtcController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'End video call session',
-    description: 'Ends a video call session, saves conversation history, and calculates analytics.',
+    description:
+      'Ends a video call session, saves conversation history, and calculates analytics.',
   })
   @ApiBody({
     schema: {
@@ -424,7 +455,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   @ApiResponse({ status: 404, description: 'Session not found' })
   async endSession(
     @CurrentUser() user: any,
@@ -474,13 +508,17 @@ export class RtcController {
   @Get('session/:id')
   @ApiOperation({
     summary: 'Get session details',
-    description: 'Retrieves details of a video call session including conversation history and analytics.',
+    description:
+      'Retrieves details of a video call session including conversation history and analytics.',
   })
   @ApiResponse({
     status: 200,
     description: 'Session details retrieved successfully',
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   @ApiResponse({ status: 404, description: 'Session not found' })
   async getSession(
     @CurrentUser() user: any,
@@ -503,7 +541,8 @@ export class RtcController {
   @Get('sessions')
   @ApiOperation({
     summary: 'Get user sessions',
-    description: 'Retrieves all video call sessions for the authenticated user.',
+    description:
+      'Retrieves all video call sessions for the authenticated user.',
   })
   @ApiQuery({
     name: 'limit',
@@ -516,7 +555,10 @@ export class RtcController {
     status: 200,
     description: 'Sessions retrieved successfully',
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getUserSessions(
     @CurrentUser() user: any,
     @Query('limit') limit?: number,
@@ -537,7 +579,8 @@ export class RtcController {
   @Get('analytics/user')
   @ApiOperation({
     summary: 'Get user analytics',
-    description: 'Retrieves comprehensive analytics for the authenticated user including call stats and fluency metrics.',
+    description:
+      'Retrieves comprehensive analytics for the authenticated user including call stats and fluency metrics.',
   })
   @ApiResponse({
     status: 200,
@@ -558,7 +601,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getUserAnalytics(@CurrentUser() user: any) {
     this.logger.log(`User analytics requested - User: ${user.id}`);
     return this.analyticsService.getUserAnalytics(user.id);
@@ -567,7 +613,8 @@ export class RtcController {
   @Get('analytics/fluency-trend')
   @ApiOperation({
     summary: 'Get fluency trend',
-    description: 'Retrieves fluency score trend over time for the authenticated user.',
+    description:
+      'Retrieves fluency score trend over time for the authenticated user.',
   })
   @ApiQuery({
     name: 'limit',
@@ -592,7 +639,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getFluencyTrend(
     @CurrentUser() user: any,
     @Query('limit') limit?: number,
@@ -604,7 +654,8 @@ export class RtcController {
   @Get('analytics/conversation-stats')
   @ApiOperation({
     summary: 'Get conversation statistics',
-    description: 'Retrieves conversation statistics for the authenticated user.',
+    description:
+      'Retrieves conversation statistics for the authenticated user.',
   })
   @ApiResponse({
     status: 200,
@@ -619,7 +670,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getConversationStats(@CurrentUser() user: any) {
     this.logger.log(`Conversation stats requested - User: ${user.id}`);
     return this.analyticsService.getConversationStats(user.id);
@@ -659,7 +713,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getPeriodAnalytics(
     @CurrentUser() user: any,
     @Query('startDate') startDate: string,
@@ -704,12 +761,17 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getDailyAnalytics(
     @CurrentUser() user: any,
     @Query('days') days?: number,
   ) {
-    this.logger.log(`Daily analytics requested - User: ${user.id}, Days: ${days || 30}`);
+    this.logger.log(
+      `Daily analytics requested - User: ${user.id}, Days: ${days || 30}`,
+    );
     return this.analyticsService.getDailyAnalytics(days || 30);
   }
 
@@ -739,7 +801,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getTopUsersByCalls(
     @CurrentUser() user: any,
     @Query('limit') limit?: number,
@@ -774,7 +839,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getTopUsersByFluency(
     @CurrentUser() user: any,
     @Query('limit') limit?: number,
@@ -786,7 +854,8 @@ export class RtcController {
   @Get('monitoring/health')
   @ApiOperation({
     summary: 'Get system health status',
-    description: 'Retrieves current system health including active calls, error rate, and response times.',
+    description:
+      'Retrieves current system health including active calls, error rate, and response times.',
   })
   @ApiResponse({
     status: 200,
@@ -794,7 +863,11 @@ export class RtcController {
     schema: {
       type: 'object',
       properties: {
-        status: { type: 'string', enum: ['healthy', 'degraded', 'unhealthy'], example: 'healthy' },
+        status: {
+          type: 'string',
+          enum: ['healthy', 'degraded', 'unhealthy'],
+          example: 'healthy',
+        },
         activeCalls: { type: 'number', example: 5 },
         errorRate: { type: 'number', example: 2 },
         averageResponseTime: { type: 'number', example: 1500 },
@@ -803,7 +876,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getSystemHealth(@CurrentUser() user: any) {
     this.logger.log(`System health requested - User: ${user.id}`);
     return this.monitoringService.getSystemHealth();
@@ -812,7 +888,8 @@ export class RtcController {
   @Get('monitoring/errors')
   @ApiOperation({
     summary: 'Get error metrics',
-    description: 'Retrieves error metrics including total errors, error rate, and recent errors.',
+    description:
+      'Retrieves error metrics including total errors, error rate, and recent errors.',
   })
   @ApiResponse({
     status: 200,
@@ -832,17 +909,26 @@ export class RtcController {
             type: 'object',
             properties: {
               type: { type: 'string', example: 'connection_failed' },
-              message: { type: 'string', example: 'Failed to connect to LiveKit' },
+              message: {
+                type: 'string',
+                example: 'Failed to connect to LiveKit',
+              },
               timestamp: { type: 'string', format: 'date-time' },
               userId: { type: 'number', example: 1 },
-              roomName: { type: 'string', example: 'lesson-1-123-1699564800000' },
+              roomName: {
+                type: 'string',
+                example: 'lesson-1-123-1699564800000',
+              },
             },
           },
         },
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getErrorMetrics(@CurrentUser() user: any) {
     this.logger.log(`Error metrics requested - User: ${user.id}`);
     return this.monitoringService.getErrorMetrics();
@@ -869,14 +955,20 @@ export class RtcController {
             properties: {
               responseTime: { type: 'number', example: 4500 },
               timestamp: { type: 'string', format: 'date-time' },
-              roomName: { type: 'string', example: 'lesson-1-123-1699564800000' },
+              roomName: {
+                type: 'string',
+                example: 'lesson-1-123-1699564800000',
+              },
             },
           },
         },
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getPerformanceMetrics(@CurrentUser() user: any) {
     this.logger.log(`Performance metrics requested - User: ${user.id}`);
     return this.monitoringService.getPerformanceMetrics();
@@ -900,7 +992,10 @@ export class RtcController {
       },
     },
   })
-  @ApiResponse({ status: 401, description: 'Unauthorized - authentication required' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required',
+  })
   async getConnectionStats(@CurrentUser() user: any) {
     this.logger.log(`Connection stats requested - User: ${user.id}`);
     return this.monitoringService.getConnectionStats();

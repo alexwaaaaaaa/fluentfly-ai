@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Lesson } from './entities/lesson.entity';
 import { Exercise } from './entities/exercise.entity';
 import { RedisService } from '../../common/redis/redis.service';
@@ -101,7 +101,9 @@ export class LessonsService {
 
     // Sort exercises by orderIndex
     if (lesson.exercises) {
-      lesson.exercises.sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+      lesson.exercises.sort(
+        (a, b) => (a.orderIndex || 0) - (b.orderIndex || 0),
+      );
     }
 
     // Cache for 1 hour
@@ -149,7 +151,7 @@ export class LessonsService {
       await this.redisService.del(`lesson:${lessonId}:exercises-only`);
       this.logger.log(`Invalidated cache for lesson: ${lessonId}`);
     }
-    
+
     // Invalidate all lessons queries
     await this.redisService.invalidate('lessons:*');
     this.logger.log('Invalidated all lessons cache');

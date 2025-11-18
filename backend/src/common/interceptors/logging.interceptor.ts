@@ -12,8 +12,14 @@ import { tap, catchError } from 'rxjs/operators';
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger('HTTP');
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest();
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const request = context.switchToHttp().getRequest<{
+      method: string;
+      url: string;
+      query: Record<string, unknown>;
+      params: Record<string, unknown>;
+      user?: { id: number };
+    }>();
     const { method, url, query, params } = request;
     const userId = request.user?.id;
     const now = Date.now();
@@ -42,14 +48,14 @@ export class LoggingInterceptor implements NestInterceptor {
           const response = context.switchToHttp().getResponse();
           const delay = Date.now() - now;
           const responseLog = `← ${method} ${url} ${response.statusCode} - ${delay}ms`;
-          
+
           if (delay > 3000) {
             this.logger.warn(`${responseLog} [SLOW REQUEST]`);
           } else {
             this.logger.log(responseLog);
           }
         },
-        error: (error: any) => {
+        error: (error: Error & { status?: number; statusCode?: number }) => {
           const delay = Date.now() - now;
           const status = error.status || error.statusCode || 500;
           this.logger.error(
@@ -57,7 +63,7 @@ export class LoggingInterceptor implements NestInterceptor {
           );
         },
       }),
-      catchError((error: any) => {
+      catchError((error: Error) => {
         // Additional error logging with stack trace
         this.logger.error({
           message: 'Request failed',
@@ -68,7 +74,7 @@ export class LoggingInterceptor implements NestInterceptor {
           stack: error.stack,
           timestamp: new Date().toISOString(),
         });
-        
+
         return throwError(() => error);
       }),
     );

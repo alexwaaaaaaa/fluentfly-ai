@@ -162,7 +162,9 @@ describe('AuthService', () => {
       const result = await service.verifyOtp({ phone, otp });
 
       expect(result).toHaveProperty('accessToken');
-      expect(mockUsersService.updateLastActive).toHaveBeenCalledWith(mockUser.id);
+      expect(mockUsersService.updateLastActive).toHaveBeenCalledWith(
+        mockUser.id,
+      );
     });
 
     it('should throw error for expired OTP', async () => {

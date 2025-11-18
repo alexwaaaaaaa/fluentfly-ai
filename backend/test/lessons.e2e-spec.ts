@@ -16,7 +16,7 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -62,7 +62,7 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
 
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body.length).toBeGreaterThan(0);
-      
+
       // Verify lesson structure
       const lesson = response.body[0];
       expect(lesson).toHaveProperty('id');
@@ -79,7 +79,7 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
-      
+
       // All returned lessons should be A1 level
       response.body.forEach((lesson: any) => {
         expect(lesson.level).toBe('A1');
@@ -93,12 +93,13 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
-      
+
       // Results should contain the search term in title or skill
       if (response.body.length > 0) {
-        const hasSearchTerm = response.body.some((lesson: any) => 
-          lesson.title.toLowerCase().includes('greeting') ||
-          lesson.skill.toLowerCase().includes('greeting')
+        const hasSearchTerm = response.body.some(
+          (lesson: any) =>
+            lesson.title.toLowerCase().includes('greeting') ||
+            lesson.skill.toLowerCase().includes('greeting'),
         );
         expect(hasSearchTerm).toBe(true);
       }
@@ -112,9 +113,7 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
     });
 
     it('should reject requests without authentication', async () => {
-      await request(app.getHttpServer())
-        .get('/lessons')
-        .expect(401);
+      await request(app.getHttpServer()).get('/lessons').expect(401);
     });
   });
 
@@ -173,7 +172,7 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
         `SELECT DISTINCT l.id 
          FROM lessons l 
          INNER JOIN exercises e ON e.lesson_id = l.id 
-         LIMIT 1`
+         LIMIT 1`,
       );
       if (result.length > 0) {
         lessonId = result[0].id;
@@ -200,7 +199,13 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
       expect(exercise).toHaveProperty('lessonId', lessonId);
       expect(exercise).toHaveProperty('type');
       expect(exercise).toHaveProperty('question');
-      expect(['mcq', 'fill_blank', 'speaking', 'listening', 'vocabulary']).toContain(exercise.type);
+      expect([
+        'mcq',
+        'fill_blank',
+        'speaking',
+        'listening',
+        'vocabulary',
+      ]).toContain(exercise.type);
     });
 
     it('should return empty array for lesson without exercises', async () => {
@@ -209,7 +214,7 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
         `INSERT INTO lessons (skill, title, level, description) 
          VALUES ($1, $2, $3, $4) 
          RETURNING id`,
-        ['Test', 'Empty Lesson', 'A1', 'Test lesson without exercises']
+        ['Test', 'Empty Lesson', 'A1', 'Test lesson without exercises'],
       );
       const emptyLessonId = result[0].id;
 
@@ -222,7 +227,9 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
       expect(response.body.length).toBe(0);
 
       // Clean up
-      await dataSource.query('DELETE FROM lessons WHERE id = $1', [emptyLessonId]);
+      await dataSource.query('DELETE FROM lessons WHERE id = $1', [
+        emptyLessonId,
+      ]);
     });
 
     it('should return 404 for exercises of non-existent lesson', async () => {
@@ -259,7 +266,7 @@ describe('Lessons Retrieval with Exercises (e2e)', () => {
         .expect(200);
 
       expect(Array.isArray(exercisesResponse.body)).toBe(true);
-      
+
       // Verify all exercises belong to the lesson
       exercisesResponse.body.forEach((exercise: any) => {
         expect(exercise.lessonId).toBe(selectedLesson.id);

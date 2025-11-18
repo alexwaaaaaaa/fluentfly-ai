@@ -15,7 +15,10 @@ import {
 } from '@nestjs/swagger';
 import { LessonsService } from './lessons.service';
 import { LessonQueryDto } from './dto/lesson-query.dto';
-import { LessonResponseDto, ExerciseResponseDto } from './dto/lesson-response.dto';
+import {
+  LessonResponseDto,
+  ExerciseResponseDto,
+} from './dto/lesson-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('lessons')

@@ -6,7 +6,7 @@ export const getCacheConfig = async (
   configService: ConfigService,
 ): Promise<CacheModuleOptions> => {
   const redisUrl = configService.get<string>('REDIS_URL');
-  
+
   if (!redisUrl) {
     // Fallback to in-memory cache for development
     return {

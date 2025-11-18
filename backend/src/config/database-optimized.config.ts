@@ -5,14 +5,14 @@ export const getOptimizedDatabaseConfig = (
   configService: ConfigService,
 ): TypeOrmModuleOptions => {
   const isProduction = configService.get('NODE_ENV') === 'production';
-  
+
   return {
     type: 'postgres',
     url: configService.get<string>('DATABASE_URL'),
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     synchronize: false, // NEVER true in production
     logging: !isProduction ? ['error', 'warn'] : ['error'],
-    
+
     // Connection pool optimization for high traffic
     extra: {
       // Connection pool settings
@@ -20,18 +20,18 @@ export const getOptimizedDatabaseConfig = (
       min: isProduction ? 10 : 2, // Min connections
       idleTimeoutMillis: 30000, // Close idle connections after 30s
       connectionTimeoutMillis: 5000, // Connection timeout 5s
-      
+
       // Performance optimizations
       statement_timeout: 30000, // 30s query timeout
       query_timeout: 30000,
-      
+
       // SSL for production
       ssl: isProduction ? { rejectUnauthorized: false } : false,
-      
+
       // Application name for monitoring
       application_name: 'fluentfly-api',
     },
-    
+
     // Enable query result caching
     cache: {
       type: 'redis',
@@ -40,11 +40,11 @@ export const getOptimizedDatabaseConfig = (
       },
       duration: 60000, // 1 minute default cache
     },
-    
+
     // Migrations
     migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
     migrationsRun: isProduction,
-    
+
     // Retry logic
     retryAttempts: 3,
     retryDelay: 3000,

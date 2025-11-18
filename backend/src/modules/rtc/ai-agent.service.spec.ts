@@ -45,7 +45,7 @@ describe('AiAgentService', () => {
     configService = module.get<ConfigService>(ConfigService);
 
     jest.clearAllMocks();
-    
+
     // Reset mock config to return valid values by default
     mockConfigService.get.mockImplementation((key: string) => {
       const config: Record<string, string> = {
@@ -69,7 +69,9 @@ describe('AiAgentService', () => {
         topic: 'Greetings',
       };
 
-      mockSpeechService.textToSpeech.mockResolvedValue('https://example.com/greeting.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://example.com/greeting.mp3',
+      );
 
       await service.spawnAgent(roomName, context);
 
@@ -84,7 +86,9 @@ describe('AiAgentService', () => {
         userId: 1,
       };
 
-      mockSpeechService.textToSpeech.mockResolvedValue('https://example.com/greeting.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://example.com/greeting.mp3',
+      );
 
       await service.spawnAgent(roomName, context);
       await service.spawnAgent(roomName, context);
@@ -116,7 +120,9 @@ describe('AiAgentService', () => {
         userId: 1,
       };
 
-      mockSpeechService.textToSpeech.mockResolvedValue('https://example.com/greeting.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://example.com/greeting.mp3',
+      );
 
       await service.spawnAgent(roomName, context);
 
@@ -136,7 +142,9 @@ describe('AiAgentService', () => {
         userId: 1,
       };
 
-      mockSpeechService.textToSpeech.mockResolvedValue('https://example.com/audio.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://example.com/audio.mp3',
+      );
       mockSpeechService.speechToText.mockResolvedValue({
         text: 'Hello',
         confidence: 0.95,
@@ -168,7 +176,9 @@ describe('AiAgentService', () => {
         userId: 1,
       };
 
-      mockSpeechService.textToSpeech.mockResolvedValue('https://example.com/greeting.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://example.com/greeting.mp3',
+      );
 
       await service.spawnAgent(roomName, context);
 
@@ -195,7 +205,9 @@ describe('AiAgentService', () => {
         userId: 1,
       };
 
-      mockSpeechService.textToSpeech.mockResolvedValue('https://example.com/greeting.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://example.com/greeting.mp3',
+      );
 
       await service.spawnAgent(roomName, context);
       expect(service.isAgentActive(roomName)).toBe(true);
@@ -219,7 +231,9 @@ describe('AiAgentService', () => {
         userId: 1,
       };
 
-      mockSpeechService.textToSpeech.mockResolvedValue('https://example.com/greeting.mp3');
+      mockSpeechService.textToSpeech.mockResolvedValue(
+        'https://example.com/greeting.mp3',
+      );
 
       await service.spawnAgent(roomName, context);
 

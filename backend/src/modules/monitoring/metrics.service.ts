@@ -7,28 +7,28 @@ export class MetricsService {
   constructor(
     @InjectMetric('http_requests_total')
     private readonly httpRequestsCounter: Counter,
-    
+
     @InjectMetric('http_request_duration_seconds')
     private readonly httpRequestDuration: Histogram,
-    
+
     @InjectMetric('active_users')
     private readonly activeUsersGauge: Gauge,
-    
+
     @InjectMetric('video_calls_active')
     private readonly videoCallsGauge: Gauge,
-    
+
     @InjectMetric('database_connections')
     private readonly dbConnectionsGauge: Gauge,
-    
+
     @InjectMetric('cache_hits_total')
     private readonly cacheHitsCounter: Counter,
-    
+
     @InjectMetric('cache_misses_total')
     private readonly cacheMissesCounter: Counter,
-    
+
     @InjectMetric('queue_jobs_total')
     private readonly queueJobsCounter: Counter,
-    
+
     @InjectMetric('queue_jobs_failed_total')
     private readonly queueJobsFailedCounter: Counter,
   ) {}

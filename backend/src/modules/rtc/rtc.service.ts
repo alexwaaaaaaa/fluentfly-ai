@@ -117,7 +117,9 @@ export class RtcService {
     });
 
     const savedSession = await this.sessionRepository.save(session);
-    this.logger.log(`Started video call session ${savedSession.id} for user ${userId}`);
+    this.logger.log(
+      `Started video call session ${savedSession.id} for user ${userId}`,
+    );
 
     return savedSession;
   }
@@ -162,7 +164,9 @@ export class RtcService {
     session.analytics = analytics;
 
     const updatedSession = await this.sessionRepository.save(session);
-    this.logger.log(`Ended video call session ${sessionId}, duration: ${duration}s`);
+    this.logger.log(
+      `Ended video call session ${sessionId}, duration: ${duration}s`,
+    );
 
     return updatedSession;
   }
@@ -182,7 +186,9 @@ export class RtcService {
     }>,
   ): Promise<void> {
     const turnEntities = turns.map((turn) => {
-      const wordCount = turn.text.split(/\s+/).filter((w) => w.length > 0).length;
+      const wordCount = turn.text
+        .split(/\s+/)
+        .filter((w) => w.length > 0).length;
       return this.turnRepository.create({
         sessionId,
         speaker: turn.speaker,
@@ -194,7 +200,9 @@ export class RtcService {
     });
 
     await this.turnRepository.save(turnEntities);
-    this.logger.log(`Saved ${turnEntities.length} conversation turns for session ${sessionId}`);
+    this.logger.log(
+      `Saved ${turnEntities.length} conversation turns for session ${sessionId}`,
+    );
   }
 
   /**
@@ -245,7 +253,8 @@ export class RtcService {
       }
     }
 
-    const averagePauseLength = pauseCount > 0 ? totalPauseLength / pauseCount : 0;
+    const averagePauseLength =
+      pauseCount > 0 ? totalPauseLength / pauseCount : 0;
 
     // Calculate fluency score (0-100)
     // Based on: WPM (40%), pause frequency (30%), turn count (30%)
@@ -291,7 +300,10 @@ export class RtcService {
    * @param limit - Maximum number of sessions to return
    * @returns Array of sessions
    */
-  async getUserSessions(userId: number, limit = 10): Promise<VideoCallSession[]> {
+  async getUserSessions(
+    userId: number,
+    limit = 10,
+  ): Promise<VideoCallSession[]> {
     return this.sessionRepository.find({
       where: { userId },
       order: { createdAt: 'DESC' },

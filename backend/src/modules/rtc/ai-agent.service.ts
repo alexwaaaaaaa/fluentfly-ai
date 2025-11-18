@@ -20,7 +20,7 @@ export interface ConversationTurn {
 
 /**
  * AI Agent Service for Video Call Interactions
- * 
+ *
  * This service manages AI agents that participate in video call sessions with users.
  * It handles:
  * - Agent initialization and token generation
@@ -28,7 +28,7 @@ export interface ConversationTurn {
  * - AI response generation via ChatAI service
  * - Text-to-speech conversion for AI responses
  * - Conversation history tracking
- * 
+ *
  * Architecture Note:
  * The LiveKit server SDK is primarily for token generation and room management.
  * In a production environment, you would need a separate agent process (e.g., using
@@ -37,14 +37,15 @@ export interface ConversationTurn {
  * 2. Subscribes to user audio tracks
  * 3. Processes audio in real-time
  * 4. Publishes AI-generated audio responses
- * 
+ *
  * This service provides the backend logic and can be extended to communicate with
  * such agent processes via message queues, WebSockets, or HTTP APIs.
  */
 @Injectable()
 export class AiAgentService {
   private readonly logger = new Logger(AiAgentService.name);
-  private activeAgents: Map<string, { context: AgentContext; token: string }> = new Map();
+  private activeAgents: Map<string, { context: AgentContext; token: string }> =
+    new Map();
   private conversationHistory: Map<string, ConversationTurn[]> = new Map();
   private audioBuffers: Map<string, Buffer[]> = new Map();
   private silenceTimers: Map<string, NodeJS.Timeout> = new Map();
@@ -73,7 +74,7 @@ export class AiAgentService {
    * Note: This creates the agent metadata and prepares it for connection.
    * In a production environment, this would trigger a separate agent process
    * (e.g., using LiveKit Agents framework) to actually join the room.
-   * 
+   *
    * @param roomName - The name of the room to join
    * @param context - Context about the lesson and user
    * @returns Promise that resolves when agent is initialized
@@ -158,8 +159,6 @@ export class AiAgentService {
     return await at.toJwt();
   }
 
-
-
   /**
    * Process incoming audio data from user
    * This method would be called when audio frames are received
@@ -208,7 +207,7 @@ export class AiAgentService {
   ): Promise<void> {
     try {
       const buffers = this.audioBuffers.get(roomName);
-      
+
       // Check if there's any audio to process
       if (!buffers || buffers.length === 0) {
         return;
@@ -225,7 +224,8 @@ export class AiAgentService {
       this.audioBuffers.set(roomName, []);
 
       // Convert speech to text
-      const transcription = await this.speechService.speechToText(combinedAudio);
+      const transcription =
+        await this.speechService.speechToText(combinedAudio);
 
       if (!transcription.text || transcription.text.trim().length === 0) {
         this.logger.log(`No speech detected in room ${roomName}`);
@@ -273,7 +273,7 @@ export class AiAgentService {
     context: AgentContext,
   ): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       this.logger.log(
         `Generating AI response for user text: "${userText}" in room ${roomName}`,
@@ -317,12 +317,12 @@ export class AiAgentService {
 
       const history = this.conversationHistory.get(roomName) || [];
       history.push(aiTurn);
-      
+
       // Memory optimization: Keep only last 50 turns
       if (history.length > 50) {
         history.splice(0, history.length - 50);
       }
-      
+
       this.conversationHistory.set(roomName, history);
 
       // Publish audio response to LiveKit room
@@ -359,7 +359,7 @@ export class AiAgentService {
    * Publish audio to the LiveKit room
    * Note: In production, this would send the audio URL to the agent process
    * which would then download and publish it to the LiveKit room.
-   * 
+   *
    * @param audioUrl - URL of the audio file to publish
    * @param roomName - The name of the room
    */
@@ -521,7 +521,7 @@ export class AiAgentService {
   private cleanup(roomName: string): void {
     this.activeAgents.delete(roomName);
     this.audioBuffers.delete(roomName);
-    
+
     // Clear any pending silence timers
     const timer = this.silenceTimers.get(roomName);
     if (timer) {

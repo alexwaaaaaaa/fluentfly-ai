@@ -19,7 +19,7 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -47,7 +47,9 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
     authToken = jwtService.sign({ sub: testUserId, phone: uniquePhone });
 
     // Get a lesson ID for testing
-    const lessonResult = await dataSource.query('SELECT id FROM lessons LIMIT 1');
+    const lessonResult = await dataSource.query(
+      'SELECT id FROM lessons LIMIT 1',
+    );
     if (lessonResult.length > 0) {
       lessonId = lessonResult[0].id;
     }
@@ -56,8 +58,12 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
   afterAll(async () => {
     // Clean up test data
     if (dataSource && testUserId) {
-      await dataSource.query('DELETE FROM progress WHERE user_id = $1', [testUserId]);
-      await dataSource.query('DELETE FROM user_badges WHERE user_id = $1', [testUserId]);
+      await dataSource.query('DELETE FROM progress WHERE user_id = $1', [
+        testUserId,
+      ]);
+      await dataSource.query('DELETE FROM user_badges WHERE user_id = $1', [
+        testUserId,
+      ]);
       await dataSource.query('DELETE FROM users WHERE id = $1', [testUserId]);
     }
     await app.close();
@@ -115,7 +121,7 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
-      
+
       if (response.body.length > 0) {
         const progress = response.body[0];
         expect(progress).toHaveProperty('id');
@@ -175,7 +181,7 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
       // Get initial XP
       const result = await dataSource.query(
         'SELECT xp FROM users WHERE id = $1',
-        [testUserId]
+        [testUserId],
       );
       initialXp = result[0].xp;
     });
@@ -214,10 +220,10 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
 
     it('should include streak bonus in XP calculation', async () => {
       // Set a streak for the user
-      await dataSource.query(
-        'UPDATE users SET streak = $1 WHERE id = $2',
-        [5, testUserId]
-      );
+      await dataSource.query('UPDATE users SET streak = $1 WHERE id = $2', [
+        5,
+        testUserId,
+      ]);
 
       const response = await request(app.getHttpServer())
         .post('/gamification/award-xp')
@@ -283,13 +289,13 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       yesterday.setHours(0, 0, 0, 0);
-      
+
       await dataSource.query(
         `UPDATE users 
          SET last_active_date = $1,
              streak = 3
          WHERE id = $2`,
-        [yesterday, testUserId]
+        [yesterday, testUserId],
       );
 
       const response = await request(app.getHttpServer())
@@ -306,13 +312,13 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
       const threeDaysAgo = new Date();
       threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
       threeDaysAgo.setHours(0, 0, 0, 0);
-      
+
       await dataSource.query(
         `UPDATE users 
          SET last_active_date = $1,
              streak = 5
          WHERE id = $2`,
-        [threeDaysAgo, testUserId]
+        [threeDaysAgo, testUserId],
       );
 
       const response = await request(app.getHttpServer())
@@ -387,7 +393,7 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
-      
+
       if (response.body.length > 0) {
         const entry = response.body[0];
         expect(entry).toHaveProperty('userId');
@@ -416,7 +422,7 @@ describe('Progress Tracking and XP Awarding (e2e)', () => {
         .expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
-      
+
       // User may or may not have badges yet
       if (response.body.length > 0) {
         const badge = response.body[0];

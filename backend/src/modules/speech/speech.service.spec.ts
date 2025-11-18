@@ -73,7 +73,7 @@ describe('SpeechService', () => {
     it('should generate consistent hash for same text and voice', async () => {
       const text = 'Hello world';
       const cachedUrl = 'https://storage.com/cached-audio.mp3';
-      
+
       // Both calls should use cache
       mockStorageService.getAudio.mockResolvedValue(cachedUrl);
 
@@ -138,12 +138,14 @@ describe('SpeechService', () => {
     it('should use hash-based caching for TTS', async () => {
       const text = 'Hello';
       const cachedUrl = 'https://storage.com/cached.mp3';
-      
+
       mockStorageService.getAudio.mockResolvedValue(cachedUrl);
 
       const result = await service.textToSpeech(text);
 
-      expect(mockStorageService.getAudio).toHaveBeenCalledWith(expect.any(String));
+      expect(mockStorageService.getAudio).toHaveBeenCalledWith(
+        expect.any(String),
+      );
       const hash = mockStorageService.getAudio.mock.calls[0][0];
       expect(hash).toHaveLength(64); // SHA-256 hash length
       expect(result).toBe(cachedUrl);

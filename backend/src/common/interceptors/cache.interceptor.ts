@@ -10,7 +10,10 @@ import { tap } from 'rxjs/operators';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { Reflector } from '@nestjs/core';
-import { CACHE_KEY_METADATA, CACHE_TTL_METADATA } from '../decorators/cache.decorator';
+import {
+  CACHE_KEY_METADATA,
+  CACHE_TTL_METADATA,
+} from '../decorators/cache.decorator';
 
 @Injectable()
 export class CacheInterceptor implements NestInterceptor {
@@ -27,7 +30,7 @@ export class CacheInterceptor implements NestInterceptor {
       CACHE_KEY_METADATA,
       context.getHandler(),
     );
-    
+
     const cacheTTL = this.reflector.get<number>(
       CACHE_TTL_METADATA,
       context.getHandler(),
@@ -41,15 +44,15 @@ export class CacheInterceptor implements NestInterceptor {
     const key = typeof cacheKey === 'function' ? cacheKey(request) : cacheKey;
 
     // Try to get from cache
-    const cachedResponse = await this.cacheManager.get(key);
+    const cachedResponse = await this.cacheManager.get<unknown>(key);
     if (cachedResponse) {
       return of(cachedResponse);
     }
 
     // If not in cache, execute handler and cache result
     return next.handle().pipe(
-      tap(async (response) => {
-        await this.cacheManager.set(key, response, cacheTTL * 1000);
+      tap((response) => {
+        void this.cacheManager.set(key, response, cacheTTL * 1000);
       }),
     );
   }

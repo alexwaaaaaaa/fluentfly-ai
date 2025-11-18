@@ -12,14 +12,16 @@ const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.colorize(),
   winston.format.printf(({ timestamp, level, message, context, ...meta }) => {
-    let msg = `${timestamp} [${context || 'Application'}] ${level}: ${message}`;
-    
+    const contextStr = String(context || 'Application');
+    const messageStr = String(message);
+    let msg = `${String(timestamp)} [${contextStr}] ${String(level)}: ${messageStr}`;
+
     // Add metadata if present
     const metaStr = Object.keys(meta).length > 0 ? JSON.stringify(meta) : '';
     if (metaStr) {
       msg += ` ${metaStr}`;
     }
-    
+
     return msg;
   }),
 );
