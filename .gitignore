@@ -183,6 +183,7 @@ lesson-generator-helper.js
 !mobile/pubspec.yaml
 !mobile/analysis_options.yaml
 !k8s/*.yaml
+!livekit.yaml
 
 # ============================================
 # TESTING & LOAD TESTS
