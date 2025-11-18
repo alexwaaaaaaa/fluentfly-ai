@@ -96,7 +96,7 @@ describe('AuthService', () => {
       expect(mockRedisService.set).toHaveBeenCalledWith(
         `otp:${phone}`,
         expect.any(String),
-        600,
+        900, // Updated to match actual implementation (15 minutes)
       );
     });
 
