@@ -4,8 +4,9 @@ class AppConstants {
   // Note: Use 10.0.2.2 for Android emulator, or your laptop's local IP for physical device
   static const String apiBaseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'http://192.168.31.73:3000/api', // Physical device: laptop IP
-    // defaultValue: 'http://10.0.2.2:3000/api', // Emulator
+    defaultValue: 'http://3.7.255.108:3000/api', // AWS EC2 Production
+    // defaultValue: 'http://192.168.31.73:3000/api', // Physical device: laptop IP (local dev)
+    // defaultValue: 'http://10.0.2.2:3000/api', // Emulator (local dev)
   );
 
   static const Duration apiTimeout = Duration(seconds: 30);
