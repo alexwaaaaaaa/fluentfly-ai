@@ -112,12 +112,18 @@ jobs:
             git pull origin main
             git stash pop || true
             
-            echo "🐳 Rebuilding containers..."
-            docker-compose pull
-            docker-compose up -d --build --remove-orphans
+            echo "�  Stopping existing containers..."
+            docker-compose down --remove-orphans || true
             
-            echo "🧹 Cleaning up..."
-            docker system prune -f
+            echo "🧹 Removing old containers and images..."
+            docker container prune -f
+            docker image prune -f
+            
+            echo "🐳 Pulling latest images..."
+            docker-compose pull
+            
+            echo "🔨 Building and starting containers..."
+            docker-compose up -d --build --force-recreate
             
             echo "✅ Deployment complete!"
           EOF
