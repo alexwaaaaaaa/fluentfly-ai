@@ -93,18 +93,16 @@ services:
   livekit:
     image: livekit/livekit-server:latest
     container_name: fluentfly-livekit
-    command: --config /etc/livekit.yaml
+    command: --dev --bind 0.0.0.0
     ports:
       - "7880:7880"
       - "7881:7881"
       - "7882:7882/udp"
-    volumes:
-      - ./livekit.yaml:/etc/livekit.yaml
     restart: unless-stopped
     networks:
       - fluentfly-network
     environment:
-      LIVEKIT_KEYS: "devkey: secret"
+      - LIVEKIT_KEYS=devkey: secret
 
 volumes:
   postgres_data:
